@@ -1,0 +1,193 @@
+{
+  "_comment": [
+    "Presets for the studio. Edit freely: add an entry, reload the page, it appears.",
+    "sing  -> model 'yue2' uses style + lyrics (sections in [Verse] [Chorus] [Bridge] tags);",
+    "         model 'stable-audio' uses prompt + duration (max 120 s, instrumental only).",
+    "speak -> model 'kokoro' uses voice; 'qwen3' uses speaker + instruct; 'voxcpm2' can clone.",
+    "Style words about PRODUCTION ('polished demo mix', 'close mic') move the result as much",
+    "as genre words do — ch.21."
+  ],
+  "sing": [
+    {
+      "name": "Indie pop",
+      "emoji": "🌅",
+      "model": "yue2",
+      "style": "English, indie pop, bright acoustic guitar, soft drums, warm lead vocal, polished demo mix",
+      "lyrics": "[Verse]\nSoft morning light is touching the window\nI hear the city waking below\nCoffee on the counter, music on low\nThere is nowhere else I need to go\n\n[Chorus]\nStay with the rhythm, let it carry us home\nSing with the sunrise, we are never alone\nEvery little moment turning to gold\nStay with the rhythm, never let go\n\n[Verse]\nStreetlights fading as the morning grows\nEvery footstep finds a place it knows\nWe don't need a map to where this goes\nJust the feeling and the way it flows\n\n[Chorus]\nStay with the rhythm, let it carry us home\nSing with the sunrise, we are never alone\nEvery little moment turning to gold\nStay with the rhythm, never let go"
+    },
+    {
+      "name": "Acoustic ballad",
+      "emoji": "🕯️",
+      "model": "yue2",
+      "style": "English, acoustic ballad, fingerpicked guitar, soft piano, intimate female vocal, close mic, warm room",
+      "lyrics": "[Verse]\nI kept your letters in a drawer\nI read them when the nights are long\nThe ink is fading like before\nBut every word still sounds like song\n\n[Chorus]\nAnd if the rain should find the door\nI'll leave a light on in the hall\nI never needed any more\nThan knowing you would call\n\n[Bridge]\nTime is only a river\nAnd we were only the boat\n\n[Chorus]\nAnd if the rain should find the door\nI'll leave a light on in the hall\nI never needed any more\nThan knowing you would call"
+    },
+    {
+      "name": "Rock anthem",
+      "emoji": "🎸",
+      "model": "yue2",
+      "style": "English, arena rock anthem, driving electric guitars, big drums, powerful male vocal, stadium reverb",
+      "lyrics": "[Verse]\nWe came up from the basement floor\nWith borrowed amps and broken strings\nThey told us we would want for more\nBut we were built for bigger things\n\n[Chorus]\nRaise it up, raise it high\nLet the whole world hear us tonight\nWe are loud, we are alive\nRaise it up into the light\n\n[Verse]\nThe city hums a thousand miles\nAnd every road just leads back here\nWe trade the doubt for louder smiles\nAnd drown the silence out with cheer\n\n[Chorus]\nRaise it up, raise it high\nLet the whole world hear us tonight\nWe are loud, we are alive\nRaise it up into the light"
+    },
+    {
+      "name": "Synthwave",
+      "emoji": "🌆",
+      "model": "yue2",
+      "style": "English, 80s synthwave, analog synth arpeggios, gated reverb drums, dreamy male vocal, neon night drive",
+      "lyrics": "[Verse]\nNeon rivers on the boulevard\nChrome is shining under city stars\nRadio is playing something old\nEvery signal turning into gold\n\n[Chorus]\nDrive into the night with me\nWhere the future used to be\nHold the wheel and let it glow\nAll the way to where we go\n\n[Verse]\nPalm trees flicker on the windowpane\nMidnight falling like electric rain\nNothing waiting at the end of the line\nJust the engine and this heart of mine\n\n[Chorus]\nDrive into the night with me\nWhere the future used to be\nHold the wheel and let it glow\nAll the way to where we go"
+    },
+    {
+      "name": "Soul R&B",
+      "emoji": "🎷",
+      "model": "yue2",
+      "style": "English, neo soul, rnb, rhodes piano, smooth bass, laid back drums, silky female vocal with harmonies",
+      "lyrics": "[Verse]\nSunday morning, nothing on the list\nYour hand in mine is all that I have missed\nSlow the record down and let it spin\nLet the quiet let the love back in\n\n[Chorus]\nTake your time, take your time with me\nWe got all the time there's ever gonna be\nNo rush, no rush, baby let it be\nTake your time with me\n\n[Verse]\nWindow open and the curtains sway\nLet the whole wide world just drift away\nEvery second that we're standing still\nFeels like forever, and it always will\n\n[Chorus]\nTake your time, take your time with me\nWe got all the time there's ever gonna be\nNo rush, no rush, baby let it be\nTake your time with me"
+    },
+    {
+      "name": "Mandarin funk",
+      "emoji": "🪩",
+      "model": "yue2",
+      "style": "Mandarin, funk, nu-disco, slap bass, bright synth stabs, confident female vocal",
+      "lyrics": "[Verse]\n夜色还没散去 灯还亮着\n城市的心跳 跟着节拍走\n\n[Chorus]\n今晚不眠 让节奏带我们回家\n今晚不眠 一起唱到天亮吧\n\n[Verse]\n霓虹在闪烁 街角在摇摆\n每一步都是 自由的舞台\n\n[Chorus]\n今晚不眠 让节奏带我们回家\n今晚不眠 一起唱到天亮吧"
+    },
+    {
+      "name": "Indie pop (MiniMax)",
+      "emoji": "🏆",
+      "model": "minimax",
+      "duration": 60,
+      "style": "Genre: indie pop. BPM: 104. Key: G major. Bright and warm. Vocals: warm lead vocal. Arrangement: bright acoustic guitar, soft drums, polished demo mix.",
+      "lyrics": "[Verse]\nSoft morning light is touching the window\nI hear the city waking below\nCoffee on the counter, music on low\nThere is nowhere else I need to go\n\n[Chorus]\nStay with the rhythm, let it carry us home\nSing with the sunrise, we are never alone\nEvery little moment turning to gold\nStay with the rhythm, never let go"
+    },
+    {
+      "name": "Piano ballad (MiniMax)",
+      "emoji": "🎹",
+      "model": "minimax",
+      "duration": 90,
+      "style": "Genre: pop ballad. BPM: 72. Key: E-flat major. Tender, intimate. Vocals: soft female lead, breathy, close to the microphone. Arrangement: solo grand piano, strings enter in the chorus, gentle reverb.",
+      "lyrics": "[Intro]\n\n[Verse]\nI kept the letters that you never sent\nFolded in the pages where the evenings went\nEvery word I didn't say still hangs in the air\nLike the coat you left on the back of the chair\n\n[Chorus]\nAnd if you ever find your way back home\nThe light is on, you won't be alone\nI never learned the way to let you go\nSo I'm still here, and I thought you should know\n\n[Outro]"
+    },
+    {
+      "name": "Rock anthem (MiniMax)",
+      "emoji": "🎸",
+      "model": "minimax",
+      "duration": 90,
+      "style": "Genre: arena rock. BPM: 140. Key: E minor. Driving, anthemic. Vocals: powerful raspy male lead, gang vocals in the chorus. Arrangement: distorted rhythm guitars, pounding drums, melodic guitar solo, big live mix.",
+      "lyrics": "[Verse]\nWe were born in the static of a broken town\nEvery door was locked and the sky was brown\nBut we found a fire in the back of the night\nAnd we swore that we would never give up the fight\n\n[Chorus]\nRaise it up, let the whole world hear\nWe are louder than the years\nRaise it up till the morning breaks\nWe are everything it takes\n\n[Solo]\n\n[Chorus]\nRaise it up, let the whole world hear\nWe are louder than the years"
+    },
+    {
+      "name": "Lo-fi study beat",
+      "emoji": "📚",
+      "model": "stable-audio",
+      "prompt": "lo-fi hip hop beat, dusty vinyl crackle, mellow rhodes chords, soft boom bap drums, relaxing study music, 80 bpm",
+      "duration": 90
+    },
+    {
+      "name": "Cinematic trailer",
+      "emoji": "🎬",
+      "model": "stable-audio",
+      "prompt": "epic cinematic trailer music, huge orchestral strings, pounding taiko drums, brass swells, rising tension, dramatic finale",
+      "duration": 60
+    },
+    {
+      "name": "Deep house",
+      "emoji": "🎧",
+      "model": "stable-audio",
+      "prompt": "deep house, warm analog bassline, four on the floor kick, crisp hi-hats, lush pads, late night club, 122 bpm",
+      "duration": 120
+    },
+    {
+      "name": "Ambient pad",
+      "emoji": "🌌",
+      "model": "stable-audio",
+      "prompt": "ambient soundscape, slow evolving synth pads, soft shimmer, no drums, calm and spacious, meditation",
+      "duration": 120
+    },
+    {
+      "name": "Acoustic guitar bed",
+      "emoji": "🪕",
+      "model": "stable-audio",
+      "prompt": "warm acoustic guitar strumming, light percussion, uplifting and friendly, background music for a video, 100 bpm",
+      "duration": 60
+    },
+    {
+      "name": "Chiptune",
+      "emoji": "👾",
+      "model": "stable-audio",
+      "prompt": "8-bit chiptune, retro video game music, bouncy square wave melody, arpeggios, upbeat and playful, 140 bpm",
+      "duration": 45
+    }
+  ],
+  "speak": [
+    {
+      "name": "Podcast intro",
+      "emoji": "🎙️",
+      "model": "kokoro",
+      "voice": "am_michael",
+      "text": "Welcome back to the show. Today we're talking about three second-hand graphics cards that learned to sing. Grab a coffee — this one is a good one."
+    },
+    {
+      "name": "News read",
+      "emoji": "📰",
+      "model": "kokoro",
+      "voice": "bf_emma",
+      "text": "Good evening. Engineers working on a home server have confirmed that the machine can now generate complete songs faster than real time, using a single graphics card."
+    },
+    {
+      "name": "Audiobook narration",
+      "emoji": "📖",
+      "model": "kokoro",
+      "voice": "bm_george",
+      "text": "The tower stood under the desk for two years, humming quietly to itself. Nobody expected it to speak. And nobody, least of all the tower, expected it to sing."
+    },
+    {
+      "name": "Friendly assistant",
+      "emoji": "🤖",
+      "model": "kokoro",
+      "voice": "af_heart",
+      "text": "Hi! Your song is ready. I made three versions — have a listen and pick the one you like best."
+    },
+    {
+      "name": "Excited advert",
+      "emoji": "📣",
+      "model": "qwen3",
+      "speaker": "Ryan",
+      "instruct": "Very excited and energetic, like a radio advert.",
+      "text": "Introducing the studio that lives under your desk! Songs, voices, and transcripts — all on your own machine. No subscription. No waiting. Just press generate!"
+    },
+    {
+      "name": "Calm meditation",
+      "emoji": "🧘",
+      "model": "qwen3",
+      "speaker": "Serena",
+      "instruct": "Slow, calm, soothing, soft and gentle.",
+      "text": "Breathe in slowly. Hold it for a moment. And let it go. Let your shoulders drop, and notice the quiet around you."
+    },
+    {
+      "name": "Documentary",
+      "emoji": "🌍",
+      "model": "qwen3",
+      "speaker": "Eric",
+      "instruct": "Serious, measured and authoritative, like a nature documentary narrator.",
+      "text": "Deep inside the machine, three processors work in silence. Each one alone. Each one, for the first time, making a sound."
+    },
+    {
+      "name": "Bahasa Indonesia",
+      "emoji": "🇮🇩",
+      "model": "voxcpm2",
+      "text": "Selamat datang di studio. Mesin ini sekarang bisa berbicara, mendengar, dan bernyanyi. Silakan pilih template dan tekan tombol buat."
+    },
+    {
+      "name": "Studio narration 48 kHz",
+      "emoji": "🎚️",
+      "model": "voxcpm2",
+      "text": "This voice is rendered at forty-eight thousand samples a second — twice the detail of the other voices in this studio."
+    },
+    {
+      "name": "Clone a voice",
+      "emoji": "🧬",
+      "model": "voxcpm2",
+      "clone": true,
+      "text": "This is a cloned voice, made from a short recording. Only clone a voice you have permission to use."
+    }
+  ]
+}

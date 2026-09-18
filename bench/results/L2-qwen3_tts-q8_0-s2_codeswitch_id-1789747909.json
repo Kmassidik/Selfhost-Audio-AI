@@ -1,0 +1,52 @@
+{
+  "run_id": "L2-qwen3_tts-q8_0-s2_codeswitch_id-1789747909",
+  "label": "Qwen3-TTS q8_0",
+  "level": "L2",
+  "family": "qwen3_tts",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s2_codeswitch_id",
+  "seed": 20260915,
+  "date": "2026-09-18T23:11:56",
+  "wall_s": 6.363,
+  "rtf_wall": 0.6166,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 247680,
+    "duration_s": 10.32,
+    "bytes_per_second": 48000,
+    "sha256": "11a8d2f47f0969becc816b664e0424f7580650d2730b78af0a4dd47749db3458"
+  },
+  "peak_vram_mib": {
+    "0": 2593,
+    "1": 15,
+    "2": 15
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "qwen3_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Qwen3-TTS-12Hz-1.7B-CustomVoice-GGUF/qwen3-tts-12hz-1.7b-customvoice-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "Besok pagi kita meeting jam sembilan, jangan lupa bawa laptop dan charger. Kalau deadline-nya mundur, kita bisa push ke hari Jumat, oke?",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L2-qwen3_tts-q8_0-s2_codeswitch_id-1789747909/out.wav",
+    "--seed",
+    "20260915",
+    "--speaker",
+    "Vivian"
+  ],
+  "extra": "--speaker Vivian",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

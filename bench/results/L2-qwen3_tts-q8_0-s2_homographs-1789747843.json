@@ -1,0 +1,52 @@
+{
+  "run_id": "L2-qwen3_tts-q8_0-s2_homographs-1789747843",
+  "label": "Qwen3-TTS q8_0",
+  "level": "L2",
+  "family": "qwen3_tts",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s2_homographs",
+  "seed": 20260915,
+  "date": "2026-09-18T23:10:58",
+  "wall_s": 15.072,
+  "rtf_wall": 1.0021,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 360960,
+    "duration_s": 15.04,
+    "bytes_per_second": 48000,
+    "sha256": "d4e021ef2aa2e87f64c8d581919b08a24fd5ae4d4107a67926130a4065e76176"
+  },
+  "peak_vram_mib": {
+    "0": 2617,
+    "1": 15,
+    "2": 15
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "qwen3_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Qwen3-TTS-12Hz-1.7B-CustomVoice-GGUF/qwen3-tts-12hz-1.7b-customvoice-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "I read the lead story yesterday; today I will read it again and lead the meeting. The wind was too strong to wind the old clock, so we close the window close to the door.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L2-qwen3_tts-q8_0-s2_homographs-1789747843/out.wav",
+    "--seed",
+    "20260915",
+    "--speaker",
+    "Vivian"
+  ],
+  "extra": "--speaker Vivian",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

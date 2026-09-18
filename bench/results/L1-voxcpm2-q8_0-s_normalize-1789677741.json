@@ -1,0 +1,49 @@
+{
+  "run_id": "L1-voxcpm2-q8_0-s_normalize-1789677741",
+  "label": "L1 \u00b7 VoxCPM2 \u00b7 q8_0",
+  "level": "L1",
+  "family": "voxcpm2",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s_normalize",
+  "seed": 20260915,
+  "date": "2026-09-18T03:42:33",
+  "wall_s": 12.276,
+  "rtf_wall": 0.9027,
+  "audio": {
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 652800,
+    "duration_s": 13.6,
+    "bytes_per_second": 96000,
+    "sha256": "d6a1fa9206f3b1e27337a2e36898766250d86a48f93cb9319f35849b98c4f8c1"
+  },
+  "peak_vram_mib": {
+    "0": 5425,
+    "1": 18,
+    "2": 18
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-release/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "voxcpm2",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/VoxCPM2-GGUF/voxcpm2-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "On 2026-09-15 the box had 431 GB free, down from 585 GB four days earlier. Dr. Chen's estimate was 36.59 TFLOPS \u2014 about 91% of the advertised figure. Call +44 20 7946 0958 before 5:30 p.m.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L1-voxcpm2-q8_0-s_normalize-1789677741/out.wav",
+    "--seed",
+    "20260915"
+  ],
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

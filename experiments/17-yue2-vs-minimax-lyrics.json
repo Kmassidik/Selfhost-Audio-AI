@@ -1,0 +1,20 @@
+{
+  "minimax": {
+    "wer": 0.0165,
+    "S": 0,
+    "D": 0,
+    "I": 3,
+    "ref_words": 182,
+    "hyp_words": 185,
+    "heard": "Soft morning light is touching the window. I hear the city waking below. Coffee on the counter, music on low. There is nowhere else I need to go, and the day is opening slow, like a song that everybody knows. Nobody knows. Stay with the rhythm, let it carry us home. Sing with the sunrise, we are never alone. Every little moment turning to gold. Stay with the rhythm, never let go. Streetlights fading as the morning grows. Every footstep finds a place it knows. We don't need a map to where this goes, just the The feeling and the way it flows. Stay with the rhythm, let it carry us home. Sing with the sunrise, we are never alone. Every little moment turning to gold. Stay with the rhythm, never let go. If the night comes back again, I will hold on to this light. Every word I didn't say, I'm singing out tonight. Stay with the rhythm, let it carry us home. Sing with the sunrise, we are never alone. Every little moment turning to gold. Stay with the rhythm, never let go."
+  },
+  "yue2": {
+    "wer": 0.0,
+    "S": 0,
+    "D": 0,
+    "I": 0,
+    "ref_words": 182,
+    "hyp_words": 182,
+    "heard": "Soft morning light is touching the window. I hear the city waking below. Coffee on the counter, music on low. There is nowhere else I need. To go, and the day is opening slow, like a song that everybody knows. Stay with the rhythm, let it carry us home. Sing with the sunrise, we are never alone. Every little moment turning to gold. Stay with the rhythm. Never let go. Streetlights fading as the morning grows. Every footstep finds a place it knows. We don't need a map to where this goes. Just the feeling and the way it flows. Stay with the rhythm, let it carry us home. Sing with the sunrise, we are never alone. Every little moment turning to gold. Stay with the rhythm, never let go. If the night comes back again, I will hold on to this light. Every word. I didn't say. I'm singing out tonight. Stay with the rhythm, let it carry us home. Sing with the sunrise, we are never alone. Every little moment turning to gold. Stay with the rhythm. Never let go."
+  }
+}

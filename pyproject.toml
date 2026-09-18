@@ -1,0 +1,22 @@
+[project]
+name = "selfhostaudioai"
+version = "0.1.0"
+description = "Text to speech and text to music on three second-hand 8 GB GPUs"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.0",
+    "soundfile>=0.12",      # read/write wav — the harness must not shell out to ffmpeg
+]
+
+# torch is deliberately NOT a dependency. The CUDA build is ~3 GB, is pinned to
+# the driver on this machine, and audio.cpp does not need it at all — only the
+# Python reference paths and the scorers do.
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cu128
+[project.optional-dependencies]
+gpu = ["torch>=2.8"]
+# The ear (Part II). Installed only when the scorers are built, because an ASR
+# model to compute word error rate is itself a multi-gigabyte download.
+ear = ["torch>=2.8", "transformers>=4.40", "librosa>=0.10"]
+
+[tool.uv]
+package = false

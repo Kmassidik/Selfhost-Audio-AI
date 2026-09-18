@@ -1,0 +1,138 @@
+{
+  "_comment": [
+    "FROZEN. Changing any prompt invalidates every measurement taken before the",
+    "change. To add one, add a new id and keep the old. To retire one, mark it",
+    "retired and leave it in place. This file is the experimental control.",
+    "",
+    "Ids are stable forever. The text is never edited, not even to fix a typo —",
+    "a typo that was present during a measurement is part of that measurement.",
+    "v2 (2026-09-18): harder ids added with prefix s2_/m2_. No v1 prompt was changed."
+  ],
+  "version": 2,
+  "frozen": "2026-09-15",
+  "speech": [
+    {
+      "id": "s_short",
+      "text": "The box is finally speaking.",
+      "tests": "the shortest possible path. If this fails nothing else matters."
+    },
+    {
+      "id": "s_paragraph",
+      "text": "Three second-hand graphics cards sit in a tower under a desk. Each one holds eight gigabytes of memory, which is not very much, and none of them are connected to each other by anything faster than the motherboard. For two years that was enough to run other people's models badly. It is now enough to run them well, and the difference was never the hardware.",
+      "tests": "prosody and stability over length. Where a model drifts, repeats or runs out of breath."
+    },
+    {
+      "id": "s_normalize",
+      "text": "On 2026-09-15 the box had 431 GB free, down from 585 GB four days earlier. Dr. Chen's estimate was 36.59 TFLOPS — about 91% of the advertised figure. Call +44 20 7946 0958 before 5:30 p.m.",
+      "tests": "text normalisation: dates, units, decimals, percentages, abbreviations, phone numbers. The most common silent failure in TTS."
+    },
+    {
+      "id": "s_expressive",
+      "text": "Wait — it worked? It actually worked. After all that, it just... worked.",
+      "tests": "prosody under punctuation: em dash, question, ellipsis. Where a flat reading is obviously wrong."
+    },
+    {
+      "id": "s_multilingual",
+      "text": "Selamat pagi. Mesin ini sekarang bisa berbicara. 这台机器现在会说话了。",
+      "tests": "language switching mid-utterance, and whether a model needs a language tag."
+    },
+    {
+      "id": "s2_homographs",
+      "added": "2026-09-18",
+      "text": "I read the lead story yesterday; today I will read it again and lead the meeting. The wind was too strong to wind the old clock, so we close the window close to the door.",
+      "tests": "homographs: read/read, lead/lead, wind/wind, close/close. The words are spelled the same and must be pronounced differently from context alone. A reader that sounds them all the same has no grammar."
+    },
+    {
+      "id": "s2_numbers_hard",
+      "added": "2026-09-18",
+      "text": "Chapter XIV costs $1,299.99, or €1.250,00 in Germany. The 3rd of 21 runners finished in 2:07:53, and 1/3 of them wore size 10½. Pope Leo XIII wrote in 1891; version 2.10.3 shipped at 04:05.",
+      "tests": "harder normalisation than s_normalize: Roman numerals in two roles, currency in two locales, ordinals, fractions, race times, version numbers."
+    },
+    {
+      "id": "s2_tongue",
+      "added": "2026-09-18",
+      "text": "She sells sea shells by the sea shore, and the shells she sells are surely seashells. Red lorry, yellow lorry, red lorry, yellow lorry. Six slick slim sycamore saplings.",
+      "tests": "articulation under repeated near-identical sounds. Where attention-based readers skip or loop a repeated phrase."
+    },
+    {
+      "id": "s2_codeswitch_id",
+      "added": "2026-09-18",
+      "text": "Besok pagi kita meeting jam sembilan, jangan lupa bawa laptop dan charger. Kalau deadline-nya mundur, kita bisa push ke hari Jumat, oke?",
+      "tests": "Indonesian with English words mid-sentence, as it is actually spoken in an office. Needs both languages in one breath without a language tag switch."
+    },
+    {
+      "id": "s2_long_list",
+      "added": "2026-09-18",
+      "text": "The inventory lists: one amplifier, two cables, three microphones, four stands, five headphones, six adapters, seven batteries, eight drumsticks, nine picks, ten strings, eleven fuses, twelve labels, thirteen screws, fourteen clips, fifteen straps, sixteen pads, seventeen tapes, eighteen hooks, nineteen tags, and twenty spare knobs.",
+      "tests": "a long enumerated list. Counting is where a reader that drops or repeats an item is caught by the ear-free check: WER on a list is unambiguous."
+    }
+  ],
+  "music": [
+    {
+      "id": "m_style_only",
+      "style": "English, indie pop, bright acoustic guitar, soft drums, warm lead vocal, polished demo mix",
+      "lyrics": null,
+      "target_seconds": 30,
+      "tests": "the shortest path to a sound. No lyrics, no structure — does it make music at all."
+    },
+    {
+      "id": "m_song_short",
+      "style": "English, indie pop, bright acoustic guitar, soft drums, warm lead vocal, polished demo mix",
+      "lyrics": "[Verse]\nSoft morning light is touching the window.\nI hear the city waking below.\n[Chorus]\nStay with the rhythm, let it carry us home.\nSing with the sunrise, we are never alone.",
+      "target_seconds": 60,
+      "tests": "lyrics, structure tags, and whether the words are intelligible. Intentionally the same text as the audio.cpp Yue2 demo, so our output can be set beside theirs."
+    },
+    {
+      "id": "m_sparse",
+      "style": "solo fingerpicked nylon guitar, one voice, no drums, no reverb, close mic, quiet room",
+      "lyrics": "[Verse]\nThe fan is loud, the room is cold.\nThe numbers on the screen are old.",
+      "target_seconds": 45,
+      "tests": "sparse arrangement — nowhere for artefacts to hide. Quantization damage shows here first."
+    },
+    {
+      "id": "m_dense",
+      "style": "cyber metal, double kick, downtuned guitars, aggressive male vocal, wall of sound, loud master",
+      "lyrics": "[Verse]\nSteel and silicon, we built it from the floor.\n[Chorus]\nBurn the ceiling down, we are not asking any more.",
+      "target_seconds": 45,
+      "tests": "dense arrangement at the opposite extreme. Tests headroom and whether the mix collapses."
+    },
+    {
+      "id": "m_longform",
+      "style": "Mandarin funk, nu-disco, slap bass, bright synth stabs, confident female vocal",
+      "lyrics": "[Verse]\n夜色还没散去，灯还亮着。\n[Chorus]\n今晚不眠，让节奏带我们回家。",
+      "target_seconds": 240,
+      "tests": "THE hard one. Four minutes, non-English lyrics. This is where peak VRAM and long-range coherence are decided, and where a 437 MiB margin either holds or does not."
+    },
+    {
+      "id": "m2_fast_lyrics",
+      "added": "2026-09-18",
+      "style": "English, hip hop, 96 bpm, punchy drums, deep bass, clear male rap vocal, dry mix",
+      "lyrics": "[Verse]\nClock on the wall and the city is loud\nI keep my head up high in a crowd\nEvery single word that I say is allowed\nWrite it in the air like a line in a cloud\nStep to the beat and I never slow down\nRunning every block of this concrete town\nPicking up the pieces that I dropped on the ground\nTurning every silence into sound\n\n[Chorus]\nKeep it moving, keep it moving\nNothing stops the way we're grooving",
+      "tests": "dense, fast lyrics. Intelligibility at speed: the WER of a transcript of the song is the check, and fast rap is where music models mumble."
+    },
+    {
+      "id": "m2_indonesian_ballad",
+      "added": "2026-09-18",
+      "style": "Indonesian, pop ballad, 70 bpm, piano and strings, tender female vocal",
+      "lyrics": "[Verse]\nMalam ini sunyi tanpa suaramu\nBintang pun enggan menemani aku\nKu simpan rindu di dalam lagu\nMenunggu pagi membawa dirimu\n\n[Chorus]\nPulanglah, pulanglah padaku\nJangan biarkan aku menunggu\nSeperti hujan merindukan waktu\nAku di sini, selalu untukmu",
+      "tests": "a non-English, non-Chinese lyric language with Latin spelling. Checks whether a model sings Indonesian or falls back to English-like phonemes."
+    },
+    {
+      "id": "m2_structure",
+      "added": "2026-09-18",
+      "style": "English, rock, 128 bpm, electric guitars, drums, male vocal, key change up a whole step before the last chorus",
+      "lyrics": "[Intro]\n\n[Verse]\nWe were young and the road was wide\n\n[Chorus]\nHold on, hold on tonight\n\n[Instrumental]\n\n[Bridge]\nAnd if it all falls down\n\n[Chorus]\nHold on, hold on tonight\n\n[Outro]",
+      "tests": "structure obedience: seven sections in a stated order, an instrumental break and a requested key change. Scored by listening for the sections, not by ear for quality."
+    }
+  ],
+  "fixed": {
+    "seed": 20260915,
+    "note": "One seed everywhere. Two runs that differ cannot be compared unless the seed is held, and the null test is meaningless without it.",
+    "seeds_for_best_of_n": [
+      20260915,
+      20260916,
+      20260917
+    ],
+    "best_of_n_note": "Best-of-N is a different measurement from single-shot and is always labelled as such. YuE2's published headline is best-of-8."
+  }
+}

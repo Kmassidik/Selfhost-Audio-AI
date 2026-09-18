@@ -1,0 +1,47 @@
+[
+  {
+    "label": "16 short sentences",
+    "ok": true,
+    "duration_s": 72.22,
+    "wall_s": 9.31,
+    "peak_mib": 2971,
+    "clauses": 16,
+    "chars": 1119
+  },
+  {
+    "label": "1 sentence, 16 clauses",
+    "ok": true,
+    "duration_s": 70.6,
+    "wall_s": 9.32,
+    "peak_mib": 2939,
+    "clauses": 16,
+    "chars": 1119
+  },
+  {
+    "label": "32 short sentences",
+    "ok": true,
+    "duration_s": 144.55,
+    "wall_s": 12.0,
+    "peak_mib": 2971,
+    "clauses": 32,
+    "chars": 2239
+  },
+  {
+    "label": "1 sentence, 32 clauses",
+    "ok": true,
+    "duration_s": 141.12,
+    "wall_s": 11.99,
+    "peak_mib": 2939,
+    "clauses": 32,
+    "chars": 2239
+  },
+  {
+    "label": "1 sentence, 48 clauses",
+    "ok": true,
+    "duration_s": 211.53,
+    "wall_s": 14.57,
+    "peak_mib": 2939,
+    "clauses": 48,
+    "chars": 3359
+  }
+]

@@ -1,0 +1,52 @@
+{
+  "run_id": "L0-kokoro_tts-bf16-s_paragraph-1789658745",
+  "label": "L0 \u00b7 Kokoro-82M \u00b7 bf16",
+  "level": "L0",
+  "family": "kokoro_tts",
+  "quant": "bf16",
+  "backend": "cuda",
+  "prompt_id": "s_paragraph",
+  "seed": 20260915,
+  "date": "2026-09-17T22:25:52",
+  "wall_s": 6.96,
+  "rtf_wall": 0.3249,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 514200,
+    "duration_s": 21.425,
+    "bytes_per_second": 48000,
+    "sha256": "23e2321f34680c2f7312c11aa0ccfd1de3541d9d700afb2cb34b612335538123"
+  },
+  "peak_vram_mib": {
+    "0": 2687,
+    "1": 18,
+    "2": 18
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-release/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "kokoro_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Kokoro-82M-GGUF/kokoro-82m-bf16.gguf",
+    "--backend",
+    "cuda",
+    "--language",
+    "en-us",
+    "--voice-id",
+    "af_heart",
+    "--text",
+    "Three second-hand graphics cards sit in a tower under a desk. Each one holds eight gigabytes of memory, which is not very much, and none of them are connected to each other by anything faster than the motherboard. For two years that was enough to run other people's models badly. It is now enough to run them well, and the difference was never the hardware.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L0-kokoro_tts-bf16-s_paragraph-1789658745/out.wav",
+    "--seed",
+    "20260915"
+  ],
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

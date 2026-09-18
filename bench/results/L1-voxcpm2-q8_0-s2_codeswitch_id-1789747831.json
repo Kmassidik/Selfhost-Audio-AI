@@ -1,0 +1,52 @@
+{
+  "run_id": "L1-voxcpm2-q8_0-s2_codeswitch_id-1789747831",
+  "label": "VoxCPM2 q8_0",
+  "level": "L1",
+  "family": "voxcpm2",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s2_codeswitch_id",
+  "seed": 20260915,
+  "date": "2026-09-18T23:10:39",
+  "wall_s": 7.312,
+  "rtf_wall": 0.9521,
+  "audio": {
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 368640,
+    "duration_s": 7.68,
+    "bytes_per_second": 96000,
+    "sha256": "fb4c58920c991aa8e88bd7155868268a69b38288b549e3a0d8a8dd7adca9bb94"
+  },
+  "peak_vram_mib": {
+    "0": 4817,
+    "1": 15,
+    "2": 15
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "voxcpm2",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/VoxCPM2-GGUF/voxcpm2-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "Besok pagi kita meeting jam sembilan, jangan lupa bawa laptop dan charger. Kalau deadline-nya mundur, kita bisa push ke hari Jumat, oke?",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L1-voxcpm2-q8_0-s2_codeswitch_id-1789747831/out.wav",
+    "--seed",
+    "20260915",
+    "--text-chunk-size",
+    "400"
+  ],
+  "extra": "--text-chunk-size 400",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

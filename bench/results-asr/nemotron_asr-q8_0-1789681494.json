@@ -1,0 +1,58 @@
+{
+  "label": "Nemotron-3.5 0.6B",
+  "family": "nemotron_asr",
+  "quant": "q8_0",
+  "utterances": 3,
+  "audio_s": 20.34,
+  "wall_s": 6.99,
+  "rtf": 0.3439,
+  "corpus_wer": 0.037,
+  "S": 2,
+  "D": 0,
+  "I": 0,
+  "ref_words": 54,
+  "peak_vram_mib": 1247,
+  "date": "2026-09-18T04:44:54",
+  "corpus": "LibriSpeech test-clean, first N sorted",
+  "rows": [
+    {
+      "wer": 0.0357,
+      "S": 1,
+      "D": 0,
+      "I": 0,
+      "ref_words": 28,
+      "hyp_words": 28,
+      "id": "1089-134686-0000",
+      "duration_s": 10.435,
+      "wall_s": 2.413,
+      "ref": "HE HOPED THERE WOULD BE STEW FOR DINNER TURNIPS AND CARROTS AND BRUISED POTATOES AND FAT MUTTON PIECES TO BE LADLED OUT IN THICK PEPPERED FLOUR FATTENED SAUCE",
+      "hyp": "He hoped there would be stew for dinner, turnips and carrots and bruised potatoes and fat mutton pieces to be ladled out in thick peppered flour fatten sauce."
+    },
+    {
+      "wer": 0.0,
+      "S": 0,
+      "D": 0,
+      "I": 0,
+      "ref_words": 8,
+      "hyp_words": 8,
+      "id": "1089-134686-0001",
+      "duration_s": 3.275,
+      "wall_s": 2.258,
+      "ref": "STUFF IT INTO YOU HIS BELLY COUNSELLED HIM",
+      "hyp": "Stuff it into you his belly counselled him."
+    },
+    {
+      "wer": 0.0556,
+      "S": 1,
+      "D": 0,
+      "I": 0,
+      "ref_words": 18,
+      "hyp_words": 18,
+      "id": "1089-134686-0002",
+      "duration_s": 6.625,
+      "wall_s": 2.321,
+      "ref": "AFTER EARLY NIGHTFALL THE YELLOW LAMPS WOULD LIGHT UP HERE AND THERE THE SQUALID QUARTER OF THE BROTHELS",
+      "hyp": "After early nightfall, the yellow lamps would light up here and there, the squalid quarter of the broffles."
+    }
+  ]
+}

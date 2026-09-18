@@ -1,0 +1,52 @@
+{
+  "run_id": "L1-voxcpm2-q8_0-s2_tongue-1789747800",
+  "label": "VoxCPM2 q8_0",
+  "level": "L1",
+  "family": "voxcpm2",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s2_tongue",
+  "seed": 20260915,
+  "date": "2026-09-18T23:10:08",
+  "wall_s": 8.367,
+  "rtf_wall": 0.7805,
+  "audio": {
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 514560,
+    "duration_s": 10.72,
+    "bytes_per_second": 96000,
+    "sha256": "cd138127a6373337418dc049373f876589c523db2f5c577dcef33930e06995b5"
+  },
+  "peak_vram_mib": {
+    "0": 5417,
+    "1": 15,
+    "2": 15
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "voxcpm2",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/VoxCPM2-GGUF/voxcpm2-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "She sells sea shells by the sea shore, and the shells she sells are surely seashells. Red lorry, yellow lorry, red lorry, yellow lorry. Six slick slim sycamore saplings.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L1-voxcpm2-q8_0-s2_tongue-1789747800/out.wav",
+    "--seed",
+    "20260915",
+    "--text-chunk-size",
+    "400"
+  ],
+  "extra": "--text-chunk-size 400",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

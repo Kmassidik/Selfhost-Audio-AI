@@ -1,0 +1,54 @@
+{
+  "run_id": "L0-kokoro_tts-q8_0-s2_numbers_hard-1789747735",
+  "label": "Kokoro q8_0",
+  "level": "L0",
+  "family": "kokoro_tts",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s2_numbers_hard",
+  "seed": 20260915,
+  "date": "2026-09-18T23:09:02",
+  "wall_s": 6.702,
+  "rtf_wall": 0.2719,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 591600,
+    "duration_s": 24.65,
+    "bytes_per_second": 48000,
+    "sha256": "0a0bc9ee23d094d93af4d382cb6d4af1fac5e9a5b282646146dfeb776b442d2a"
+  },
+  "peak_vram_mib": {
+    "0": 5079,
+    "1": 15,
+    "2": 15
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "kokoro_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Kokoro-82M-GGUF/kokoro-82m-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "Chapter XIV costs $1,299.99, or \u20ac1.250,00 in Germany. The 3rd of 21 runners finished in 2:07:53, and 1/3 of them wore size 10\u00bd. Pope Leo XIII wrote in 1891; version 2.10.3 shipped at 04:05.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L0-kokoro_tts-q8_0-s2_numbers_hard-1789747735/out.wav",
+    "--language",
+    "en-us",
+    "--voice-id",
+    "af_heart",
+    "--seed",
+    "20260915"
+  ],
+  "extra": "",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

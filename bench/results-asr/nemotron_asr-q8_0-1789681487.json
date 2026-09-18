@@ -1,0 +1,18 @@
+{
+  "label": "Parakeet-TDT 0.6B",
+  "family": "nemotron_asr",
+  "quant": "q8_0",
+  "utterances": 0,
+  "audio_s": 0.0,
+  "wall_s": 0.0,
+  "rtf": null,
+  "corpus_wer": null,
+  "S": 0,
+  "D": 0,
+  "I": 0,
+  "ref_words": 0,
+  "peak_vram_mib": 33,
+  "date": "2026-09-18T04:44:47",
+  "corpus": "LibriSpeech test-clean, first N sorted",
+  "rows": []
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "L0-kokoro_tts-bf16-s_normalize-1789658752",
+  "label": "L0 \u00b7 Kokoro-82M \u00b7 bf16",
+  "level": "L0",
+  "family": "kokoro_tts",
+  "quant": "bf16",
+  "backend": "cuda",
+  "prompt_id": "s_normalize",
+  "seed": 20260915,
+  "date": "2026-09-17T22:26:00",
+  "wall_s": 7.131,
+  "rtf_wall": 0.2794,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 612600,
+    "duration_s": 25.525,
+    "bytes_per_second": 48000,
+    "sha256": "d9d58b40d0540ef1323a7b6092c2d54ae8064f0e1e046aca72f93a409908980c"
+  },
+  "peak_vram_mib": {
+    "0": 5223,
+    "1": 18,
+    "2": 18
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-release/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "kokoro_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Kokoro-82M-GGUF/kokoro-82m-bf16.gguf",
+    "--backend",
+    "cuda",
+    "--language",
+    "en-us",
+    "--voice-id",
+    "af_heart",
+    "--text",
+    "On 2026-09-15 the box had 431 GB free, down from 585 GB four days earlier. Dr. Chen's estimate was 36.59 TFLOPS \u2014 about 91% of the advertised figure. Call +44 20 7946 0958 before 5:30 p.m.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L0-kokoro_tts-bf16-s_normalize-1789658752/out.wav",
+    "--seed",
+    "20260915"
+  ],
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

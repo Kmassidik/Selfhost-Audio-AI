@@ -1,0 +1,49 @@
+{
+  "run_id": "L1-voxcpm2-q8_0-s_paragraph-1789677725",
+  "label": "L1 \u00b7 VoxCPM2 \u00b7 q8_0",
+  "level": "L1",
+  "family": "voxcpm2",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s_paragraph",
+  "seed": 20260915,
+  "date": "2026-09-18T03:42:21",
+  "wall_s": 15.689,
+  "rtf_wall": 0.721,
+  "audio": {
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 1044480,
+    "duration_s": 21.76,
+    "bytes_per_second": 96000,
+    "sha256": "1a1ff004f8d6961fc82e8f259911e24afda313aa4d8200b2530c4f8c569bb3a3"
+  },
+  "peak_vram_mib": {
+    "0": 6621,
+    "1": 18,
+    "2": 18
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-release/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "voxcpm2",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/VoxCPM2-GGUF/voxcpm2-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "Three second-hand graphics cards sit in a tower under a desk. Each one holds eight gigabytes of memory, which is not very much, and none of them are connected to each other by anything faster than the motherboard. For two years that was enough to run other people's models badly. It is now enough to run them well, and the difference was never the hardware.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L1-voxcpm2-q8_0-s_paragraph-1789677725/out.wav",
+    "--seed",
+    "20260915"
+  ],
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

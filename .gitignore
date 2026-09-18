@@ -1,0 +1,78 @@
+# ── Runtime lives on the box, never here ──────────────────────────
+# (see HOME.md — the two-machine split)
+models/
+checkpoints/
+runs/
+# audio.cpp build + Python venvs (17 GB on the box), and the test sets (1.4 GB)
+engines/
+data/
+*.gguf
+*.safetensors
+*.pt
+*.pth
+*.bin
+*.ckpt
+
+# ── Generated audio lives on the box ──────────────────────────────
+# A repository is not an audio host. listening/ commits the MANIFEST
+# and the SCORES; the waveforms stay in runs/ on the box and are
+# fetched when a listening test is actually run.
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.mp4
+
+# ── The one exception: clips a chapter actually cites ──────────────
+# planning/KB-STYLE.md §2 — <= 15 seconds, <= 1 MB, compressed, and
+# only if a page references it. check.py enforces all three.
+!knowledge-base/audio/*.mp3
+!knowledge-base/audio/*.ogg
+
+# ── Measurements ARE committed — they are the data the tables read.
+#    Raw logs and GPU samples are not; they live in runs/ on the box.
+*.log
+gpu-samples/
+
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# ── Scratch ───────────────────────────────────────────────────────
+scratch/
+tmp/
+
+# ── macOS ─────────────────────────────────────────────────────────
+# resource forks reached the box once and showed up inside agent
+# prompts — selfhostllm/serve/README.md records what that cost.
+.DS_Store
+._*
+
+# ── Secrets: never committed, even by accident ────────────────────
+# Rule 10 (planning/QUEUE.md): a token lives in a mode-600 file, never argv.
+.env.*
+.auth-header
+.aria-input
+*.token
+.netrc
+*.pem
+*.key
+
+# ── Assistant / editor local files ────────────────────────────────
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.vscode/
+.idea/
+*.swp
+
+# ── Git artefacts ─────────────────────────────────────────────────
+*.bundle
+*.orig
+
+# ── The knowledge base lives only on the Mac, never on the box or GitHub ──
+knowledge-base/

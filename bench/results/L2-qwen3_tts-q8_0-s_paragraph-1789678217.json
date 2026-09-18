@@ -1,0 +1,52 @@
+{
+  "run_id": "L2-qwen3_tts-q8_0-s_paragraph-1789678217",
+  "label": "L2 \u00b7 Qwen3-TTS CustomVoice \u00b7 q8_0",
+  "level": "L2",
+  "family": "qwen3_tts",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s_paragraph",
+  "seed": 20260915,
+  "date": "2026-09-18T03:50:29",
+  "wall_s": 11.174,
+  "rtf_wall": 0.4272,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 627840,
+    "duration_s": 26.16,
+    "bytes_per_second": 48000,
+    "sha256": "900502525ff2bc0a7c5227837273306da592c953460d6372ee9c8393be2c32bf"
+  },
+  "peak_vram_mib": {
+    "0": 5377,
+    "1": 18,
+    "2": 18
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "qwen3_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Qwen3-TTS-12Hz-1.7B-CustomVoice-GGUF/qwen3-tts-12hz-1.7b-customvoice-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "Three second-hand graphics cards sit in a tower under a desk. Each one holds eight gigabytes of memory, which is not very much, and none of them are connected to each other by anything faster than the motherboard. For two years that was enough to run other people's models badly. It is now enough to run them well, and the difference was never the hardware.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L2-qwen3_tts-q8_0-s_paragraph-1789678217/out.wav",
+    "--seed",
+    "20260915",
+    "--speaker",
+    "Vivian"
+  ],
+  "extra": "--speaker Vivian",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

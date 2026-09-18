@@ -1,0 +1,52 @@
+{
+  "run_id": "L1-voxcpm2-q8_0-s2_long_list-1789747813",
+  "label": "VoxCPM2 q8_0",
+  "level": "L1",
+  "family": "voxcpm2",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s2_long_list",
+  "seed": 20260915,
+  "date": "2026-09-18T23:10:26",
+  "wall_s": 13.4,
+  "rtf_wall": 0.4927,
+  "audio": {
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 1305600,
+    "duration_s": 27.2,
+    "bytes_per_second": 96000,
+    "sha256": "e35ca72eec6e731ac51ca879d5dfdfb3e9ea82187901d5bdc10c1627c4e4bbb0"
+  },
+  "peak_vram_mib": {
+    "0": 6623,
+    "1": 15,
+    "2": 15
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "voxcpm2",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/VoxCPM2-GGUF/voxcpm2-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "The inventory lists: one amplifier, two cables, three microphones, four stands, five headphones, six adapters, seven batteries, eight drumsticks, nine picks, ten strings, eleven fuses, twelve labels, thirteen screws, fourteen clips, fifteen straps, sixteen pads, seventeen tapes, eighteen hooks, nineteen tags, and twenty spare knobs.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L1-voxcpm2-q8_0-s2_long_list-1789747813/out.wav",
+    "--seed",
+    "20260915",
+    "--text-chunk-size",
+    "400"
+  ],
+  "extra": "--text-chunk-size 400",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "L2-qwen3_tts-q8_0-s2_tongue-1789747880",
+  "label": "Qwen3-TTS q8_0",
+  "level": "L2",
+  "family": "qwen3_tts",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s2_tongue",
+  "seed": 20260915,
+  "date": "2026-09-18T23:11:28",
+  "wall_s": 7.569,
+  "rtf_wall": 0.4979,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 364800,
+    "duration_s": 15.2,
+    "bytes_per_second": 48000,
+    "sha256": "4d2f5da265827d2b053456a75827f9150e0e4cb2e5a22f6298179aeb117cb795"
+  },
+  "peak_vram_mib": {
+    "0": 2677,
+    "1": 15,
+    "2": 15
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "qwen3_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Qwen3-TTS-12Hz-1.7B-CustomVoice-GGUF/qwen3-tts-12hz-1.7b-customvoice-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "She sells sea shells by the sea shore, and the shells she sells are surely seashells. Red lorry, yellow lorry, red lorry, yellow lorry. Six slick slim sycamore saplings.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L2-qwen3_tts-q8_0-s2_tongue-1789747880/out.wav",
+    "--seed",
+    "20260915",
+    "--speaker",
+    "Vivian"
+  ],
+  "extra": "--speaker Vivian",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

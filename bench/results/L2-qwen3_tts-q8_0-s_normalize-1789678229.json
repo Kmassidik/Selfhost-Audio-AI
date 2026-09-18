@@ -1,0 +1,52 @@
+{
+  "run_id": "L2-qwen3_tts-q8_0-s_normalize-1789678229",
+  "label": "L2 \u00b7 Qwen3-TTS CustomVoice \u00b7 q8_0",
+  "level": "L2",
+  "family": "qwen3_tts",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s_normalize",
+  "seed": 20260915,
+  "date": "2026-09-18T03:50:39",
+  "wall_s": 10.174,
+  "rtf_wall": 0.4591,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 531840,
+    "duration_s": 22.16,
+    "bytes_per_second": 48000,
+    "sha256": "c3d3458c38471cbd61af42874cab8f111a06edb6ed599d38ac0f55ace76f9883"
+  },
+  "peak_vram_mib": {
+    "0": 5285,
+    "1": 18,
+    "2": 18
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-full/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "qwen3_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Qwen3-TTS-12Hz-1.7B-CustomVoice-GGUF/qwen3-tts-12hz-1.7b-customvoice-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "On 2026-09-15 the box had 431 GB free, down from 585 GB four days earlier. Dr. Chen's estimate was 36.59 TFLOPS \u2014 about 91% of the advertised figure. Call +44 20 7946 0958 before 5:30 p.m.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L2-qwen3_tts-q8_0-s_normalize-1789678229/out.wav",
+    "--seed",
+    "20260915",
+    "--speaker",
+    "Vivian"
+  ],
+  "extra": "--speaker Vivian",
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio · selfhostaudioai</title>
+<style>
+:root{
+  --bg:#0f1115; --panel:#171a21; --panel2:#1d2129; --line:#2a2f3a; --ink:#e8eaf0; --dim:#9aa3b2;
+  --faint:#6b7382; --accent:#ff7a45; --accent2:#ffb347; --good:#3ecf8e; --bad:#ff5d6c; --blue:#5aa9ff;
+  --r:14px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+header{display:flex;align-items:center;gap:18px;padding:14px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(15,17,21,.92);backdrop-filter:blur(8px);z-index:5;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.2px;display:flex;align-items:center;gap:8px}
+.brand small{color:var(--faint);font-weight:500}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:none;border:0;color:var(--dim);padding:8px 14px;border-radius:999px;font:inherit;cursor:pointer}
+nav button.on{background:var(--panel2);color:var(--ink)}
+nav button:hover{color:var(--ink)}
+.cards{margin-left:auto;display:flex;gap:6px;font:12px var(--mono);color:var(--faint)}
+.card{padding:3px 8px;border:1px solid var(--line);border-radius:999px}
+.card.busy{border-color:var(--accent);color:var(--accent)}
+.loaded{font:12px var(--mono);color:var(--dim);display:flex;align-items:center;gap:8px}
+.loaded b{color:var(--ink)} .loaded .sw{color:var(--accent2)}
+.loaded button{background:none;border:1px solid var(--line);color:var(--dim);border-radius:999px;padding:2px 10px;font:inherit;cursor:pointer}
+.loaded button:hover{color:var(--ink);border-color:var(--dim)}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;padding:22px;max-width:1400px;margin:0 auto}
+@media(max-width:980px){main{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+h2{margin:0 0 4px;font-size:20px}
+.sub{color:var(--dim);margin:0 0 16px;font-size:14px}
+label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin:16px 0 6px}
+textarea,input,select{width:100%;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit}
+textarea{resize:vertical;min-height:72px}
+textarea.lyrics{min-height:240px;font:14px/1.55 var(--mono)}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:7px 12px;border-radius:999px;cursor:pointer;font:inherit;font-size:14px}
+.chip:hover{border-color:var(--accent)}
+.chip.on{border-color:var(--accent);background:rgba(255,122,69,.12)}
+.chip small{color:var(--faint)}
+.seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{background:none;border:0;color:var(--dim);padding:7px 14px;border-radius:999px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--accent);color:#1a0f0a;font-weight:600}
+.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}
+.row>*{flex:1;min-width:120px}
+.mini{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.mini button{background:none;border:1px dashed var(--line);color:var(--dim);border-radius:8px;padding:3px 9px;font:12px var(--mono);cursor:pointer}
+.mini button:hover{color:var(--ink);border-color:var(--dim)}
+details{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+summary{cursor:pointer;color:var(--dim);font-size:14px}
+.go{margin-top:20px;width:100%;padding:14px;border:0;border-radius:12px;font:600 16px inherit;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a0f0a}
+.go:disabled{opacity:.5;cursor:wait}
+.hint{color:var(--faint);font-size:13px;margin-top:6px}
+.warn{color:var(--accent2)}
+.feed{display:flex;flex-direction:column;gap:12px}
+.job{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.job .top{display:flex;gap:10px;align-items:center}
+.job .t{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill{font:11px var(--mono);padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.pill.done{color:var(--good);border-color:rgba(62,207,142,.4)}
+.pill.running{color:var(--accent);border-color:rgba(255,122,69,.5)}
+.pill.failed{color:var(--bad);border-color:rgba(255,93,108,.5)}
+.meta{font:12px var(--mono);color:var(--faint);margin-top:6px;display:flex;gap:12px;flex-wrap:wrap}
+audio{width:100%;margin-top:10px;height:38px}
+.acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.acts button,.acts a{background:none;border:1px solid var(--line);color:var(--dim);border-radius:8px;padding:4px 10px;font-size:13px;cursor:pointer;text-decoration:none}
+.acts button:hover,.acts a:hover{color:var(--ink);border-color:var(--dim)}
+.err{color:var(--bad);font:12px var(--mono);margin-top:6px;word-break:break-word}
+.text-out{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;white-space:pre-wrap}
+.bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:40%;background:var(--accent);animation:slide 1.2s infinite ease-in-out}
+@keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}
+.empty{color:var(--faint);text-align:center;padding:30px 10px}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.ab .side{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.ab .side b{font-size:28px}
+.hidden{display:none!important}
+.drop{border:1.5px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--dim);cursor:pointer}
+.drop:hover{border-color:var(--accent);color:var(--ink)}
+.full{grid-column:1/-1}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">🔊 Studio <small>three second-hand cards, one box</small></div>
+  <nav id="tabs">
+    <button data-tab="sing" class="on">🎵 Sing</button>
+    <button data-tab="speak">🗣️ Speak</button>
+    <button data-tab="listen">👂 Transcribe</button>
+    <button data-tab="compare">⚖️ Compare</button>
+    <button data-tab="library">📚 Library</button>
+  </nav>
+  <div class="cards"><span class="loaded" id="loaded"></span><span id="cards" style="display:flex;gap:6px"></span></div>
+</header>
+
+<main>
+  <!-- ═══════════ SING ═══════════ -->
+  <section class="panel" data-pane="sing">
+    <h2>Make a song</h2>
+    <p class="sub">Pick a style, edit the words, press create. One model is loaded at a time and takes run one after another; choosing another model switches it.</p>
+
+    <div class="seg" id="singModel">
+      <button data-m="yue2">🎤 Song with vocals</button>
+      <button data-m="minimax" class="on">🏆 MiniMax — best vocals, slow</button>
+      <button data-m="stable-audio">🎹 Instrumental</button>
+    </div>
+
+    <label>Start from a template</label>
+    <div class="chips" id="singTpl"></div>
+
+    <div id="yueFields">
+      <label>Style <span style="text-transform:none;letter-spacing:0">— genre, instruments, voice, production</span></label>
+      <textarea id="style" rows="2" placeholder="English, indie pop, bright acoustic guitar, soft drums, warm lead vocal"></textarea>
+      <div class="mini" id="styleAdd"></div>
+
+      <label>Lyrics</label>
+      <textarea id="lyrics" class="lyrics" placeholder="[Verse]&#10;your words here&#10;&#10;[Chorus]&#10;..."></textarea>
+      <div class="mini">
+        <button data-ins="[Verse]">+ [Verse]</button><button data-ins="[Chorus]">+ [Chorus]</button>
+        <button data-ins="[Bridge]">+ [Bridge]</button><button data-ins="[Outro]">+ [Outro]</button>
+      </div>
+      <div class="hint yueOnly">The song's length follows the lyrics — more sections, longer song. It can run past ten minutes on one card.</div>
+      <div id="mmFields" class="hidden">
+        <label>Length — up to <span id="mmDurLbl">60</span> s</label>
+        <input type="range" id="mmDur" min="10" max="300" step="10" value="120">
+        <div class="hint" id="mmHint">The best vocals here, and the slowest: it takes all three cards, one song at a time, about 7 seconds of making per second of song (2-minute song ≈ 14 min; the longest tested, 3 min 37 s, took 25 min). Everything else waits while it runs. The song may end before the length you set.</div>
+      </div>
+    </div>
+
+    <div id="saFields" class="hidden">
+      <label>Describe the music</label>
+      <textarea id="prompt" rows="3" placeholder="lo-fi hip hop, mellow rhodes, dusty drums, 80 bpm"></textarea>
+      <label>Length — <span id="durLbl">60</span> s</label>
+      <input type="range" id="duration" min="5" max="120" step="5" value="60">
+      <div class="hint">Instrumental only, and it stops at 2 minutes — the model's hard limit. About 8 seconds to make, whatever the length.</div>
+    </div>
+
+    <div class="row">
+      <div><label>Title (optional)</label><input id="singTitle" placeholder="My song"></div>
+      <div><label>Takes</label>
+        <div class="seg" id="singTakes"><button data-n="1">1</button><button data-n="2">2</button><button data-n="3" class="on">3</button></div>
+      </div>
+    </div>
+
+    <details id="singAdv"><summary>Advanced settings</summary>
+      <div class="row">
+        <div class="yueOnly"><label>Planning</label>
+          <select id="planning"><option value="melody">Melody & chords (recommended — faster)</option><option value="off">Off</option></select></div>
+        <div class="yueOnly"><label>Steps</label><input id="steps" type="number" min="4" max="50" value="8"></div>
+        <div><label>Seed</label><input id="singSeed" placeholder="random"></div>
+      </div>
+      <div class="hint">Same seed + same settings = the exact same song. Leave blank for a new one each time; the seed used is always shown so a good take can be remade.</div>
+    </details>
+
+    <button class="go" id="singGo">✨ Create</button>
+  </section>
+
+  <!-- ═══════════ SPEAK ═══════════ -->
+  <section class="panel hidden" data-pane="speak">
+    <h2>Make a voice</h2>
+    <p class="sub">Type anything. Pick a voice. Kokoro is fastest; Qwen3 takes direction; VoxCPM2 is 48 kHz and can clone.</p>
+
+    <div class="seg" id="speakModel">
+      <button data-m="kokoro" class="on">⚡ Kokoro</button>
+      <button data-m="qwen3">🎭 Qwen3</button>
+      <button data-m="voxcpm2">🎚️ VoxCPM2</button>
+    </div>
+
+    <label>Start from a template</label>
+    <div class="chips" id="speakTpl"></div>
+
+    <label>What to say</label>
+    <textarea id="speakText" rows="6" placeholder="Type the words to speak…"></textarea>
+    <div class="hint" id="speakCount"></div>
+
+    <div id="kokoroF"><label>Voice</label><select id="voice"></select></div>
+
+    <div id="qwenF" class="hidden">
+      <div class="row">
+        <div><label>Speaker</label><select id="speaker"></select></div>
+      </div>
+      <label>How to say it <span style="text-transform:none;letter-spacing:0">— direction in plain English</span></label>
+      <input id="instruct" placeholder="Warm and friendly.">
+      <div class="mini" id="instructAdd"></div>
+    </div>
+
+    <div id="voxF" class="hidden">
+      <label>Clone a voice (optional)</label>
+      <div class="drop" id="refDrop">🎙️ Drop or click to add a short recording <br><small>up to 14.5 s is used — only clone a voice you have permission to use</small></div>
+      <input type="file" id="refFile" accept="audio/*" class="hidden">
+      <div class="hint" id="refNote"></div>
+      <label>What is said in that recording (helps a lot)</label>
+      <input id="refText" placeholder="Optional — the exact words in the clip">
+    </div>
+
+    <div class="row">
+      <div><label>Title (optional)</label><input id="speakTitle"></div>
+      <div><label>Takes</label>
+        <div class="seg" id="speakTakes"><button data-n="1" class="on">1</button><button data-n="2">2</button><button data-n="3">3</button></div></div>
+      <div><label>Seed</label><input id="speakSeed" placeholder="random"></div>
+    </div>
+
+    <button class="go" id="speakGo">🗣️ Speak</button>
+  </section>
+
+  <!-- ═══════════ TRANSCRIBE ═══════════ -->
+  <section class="panel hidden" data-pane="listen">
+    <h2>Speech to text</h2>
+    <p class="sub">Drop an audio file. Canary writes down what was said — about one word in 161 wrong on clear English.</p>
+    <div class="drop" id="asrDrop">📄 Drop or click to add audio</div>
+    <input type="file" id="asrFile" accept="audio/*" class="hidden">
+    <div class="hint" id="asrNote"></div>
+    <div class="hint">Clear speech works best. Sung lyrics over music lose about one word in five.</div>
+  </section>
+
+  <!-- ═══════════ COMPARE ═══════════ -->
+  <section class="panel hidden" data-pane="compare">
+    <h2>Blind comparison</h2>
+    <p class="sub">Pick two takes. They are matched in loudness and hidden behind A and B — louder always sounds better otherwise. Choose, then see which was which.</p>
+    <label>First take</label><select id="cmpA"></select>
+    <label>Second take</label><select id="cmpB"></select>
+    <label>The question</label><input id="cmpQ" placeholder="Which one would you actually keep?">
+    <button class="go" id="cmpGo">⚖️ Start blind test</button>
+    <div id="cmpStage" class="hidden">
+      <div class="ab">
+        <div class="side"><b>A</b><audio id="audA" controls preload="none"></audio></div>
+        <div class="side"><b>B</b><audio id="audB" controls preload="none"></audio></div>
+      </div>
+      <label>Why (optional, in your own words)</label><input id="cmpWhy">
+      <label>Your name (optional)</label><input id="cmpWho">
+      <div class="row" style="margin-top:14px">
+        <button class="go" style="margin:0" data-vote="A">A is better</button>
+        <button class="go" style="margin:0" data-vote="B">B is better</button>
+      </div>
+    </div>
+    <div id="cmpResult" class="text-out hidden"></div>
+  </section>
+
+  <!-- ═══════════ FEED / LIBRARY ═══════════ -->
+  <section class="panel" id="feedPanel">
+    <div class="row" style="align-items:center">
+      <h2 style="flex:none" id="feedTitle">Your takes</h2>
+      <div class="seg" id="feedFilter" style="flex:none;margin-left:auto">
+        <button data-f="all" class="on">All</button><button data-f="sing">Songs</button>
+        <button data-f="speak">Voices</button><button data-f="listen">Text</button>
+      </div>
+    </div>
+    <div class="feed" id="feed" style="margin-top:14px"></div>
+  </section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+let CFG = null, JOBS = [], state = {sing:"minimax", speak:"kokoro", singN:3, speakN:1, filter:"all", ref:null};
+
+const LANG = {a:"🇺🇸 American English",b:"🇬🇧 British English",e:"🇪🇸 Spanish",f:"🇫🇷 French",h:"🇮🇳 Hindi",
+              i:"🇮🇹 Italian",j:"🇯🇵 Japanese",p:"🇧🇷 Portuguese",z:"🇨🇳 Mandarin"};
+const STYLE_ADD = ["male vocal","female vocal","acoustic","electronic","piano","guitar solo","big drums","lo-fi","live band","polished demo mix","close mic","stadium reverb"];
+const INSTRUCT_ADD = ["Warm and friendly.","Very excited and energetic.","Slow, calm and soothing.","Serious and authoritative.","Whispering softly.","Sad and quiet.","Cheerful, with a smile."];
+
+async function api(path, opts={}){
+  const r = await fetch(path, opts); const j = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(j.error || r.statusText); return j;
+}
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+/* ── tabs ── */
+$$("#tabs button").forEach(b=>b.onclick=()=>{
+  $$("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  const t=b.dataset.tab;
+  $$("[data-pane]").forEach(p=>p.classList.toggle("hidden",p.dataset.pane!==t));
+  const lib = t==="library";
+  $("#feedPanel").classList.toggle("full", lib);
+  $("#feedTitle").textContent = lib ? "Library" : "Your takes";
+  if(t==="compare") fillCompare();
+  if(["sing","speak","listen"].includes(t)) setFilter(t==="listen"?"listen":t);
+});
+
+/* ── segmented controls ── */
+function seg(id, key, attr, cb){
+  $$(`#${id} button`).forEach(b=>b.onclick=()=>{
+    $$(`#${id} button`).forEach(x=>x.classList.toggle("on",x===b));
+    state[key] = attr==="n" ? +b.dataset.n : b.dataset[attr];
+    cb && cb();
+  });
+}
+seg("singModel","sing","m",renderSing);
+seg("speakModel","speak","m",renderSpeak);
+seg("singTakes","singN","n"); seg("speakTakes","speakN","n");
+$$("#feedFilter button").forEach(b=>b.onclick=()=>setFilter(b.dataset.f));
+function setFilter(f){ state.filter=f; $$("#feedFilter button").forEach(x=>x.classList.toggle("on",x.dataset.f===f)); renderFeed(); }
+
+/* ── sing ── */
+function renderSing(){
+  const y = state.sing==="yue2", mm = state.sing==="minimax", lyr = y||mm;
+  $("#yueFields").classList.toggle("hidden",!lyr); $("#saFields").classList.toggle("hidden",lyr);
+  $("#mmFields").classList.toggle("hidden",!mm);
+  $$(".yueOnly").forEach(e=>e.classList.toggle("hidden",!y));
+  $("#singTpl").innerHTML = CFG.templates.sing.filter(t=>t.model===state.sing)
+    .map((t,i)=>`<button class="chip" data-i="${CFG.templates.sing.indexOf(t)}">${t.emoji||""} ${esc(t.name)}</button>`).join("");
+  $$("#singTpl .chip").forEach(c=>c.onclick=()=>{
+    $$("#singTpl .chip").forEach(x=>x.classList.toggle("on",x===c));
+    const t=CFG.templates.sing[+c.dataset.i]; state.singTpl=t.name;
+    if(t.model==="yue2"||t.model==="minimax"){ $("#style").value=t.style||""; $("#lyrics").value=t.lyrics||"";
+      if(t.duration){ $("#mmDur").value=t.duration; $("#mmDurLbl").textContent=t.duration; } }
+    else { $("#prompt").value=t.prompt||""; $("#duration").value=t.duration||60; $("#durLbl").textContent=$("#duration").value; }
+    if(!$("#singTitle").value || $("#singTitle").dataset.auto) { $("#singTitle").value=t.name; $("#singTitle").dataset.auto=1; }
+  });
+}
+$("#duration").oninput=e=>$("#durLbl").textContent=e.target.value;
+$("#mmDur").oninput=e=>$("#mmDurLbl").textContent=e.target.value;
+$("#singTitle").oninput=e=>delete e.target.dataset.auto;
+$("#styleAdd").innerHTML = STYLE_ADD.map(s=>`<button>+ ${s}</button>`).join("");
+$$("#styleAdd button").forEach(b=>b.onclick=()=>{const w=b.textContent.slice(2),t=$("#style");t.value=(t.value.trim()?t.value.trim().replace(/,$/,"")+", ":"")+w;});
+$$("[data-ins]").forEach(b=>b.onclick=()=>{
+  const t=$("#lyrics"), p=t.selectionStart, pre=t.value.slice(0,p), ins=(pre&&!pre.endsWith("\n\n")?(pre.endsWith("\n")?"\n":"\n\n"):"")+b.dataset.ins+"\n";
+  t.value=pre+ins+t.value.slice(p); t.focus(); t.selectionStart=t.selectionEnd=p+ins.length;
+});
+$("#singGo").onclick = async()=>{
+  const mm=state.sing==="minimax", y=state.sing==="yue2"||mm, seed=$("#singSeed").value.trim();
+  const params = mm ? {style:$("#style").value.trim(), lyrics:$("#lyrics").value.trim(), duration:+$("#mmDur").value}
+               : y  ? {style:$("#style").value.trim(), lyrics:$("#lyrics").value.trim(),
+                       planning:$("#planning").value, steps:+$("#steps").value||8}
+                    : {prompt:$("#prompt").value.trim(), duration:+$("#duration").value};
+  if(y && !params.lyrics) return alertBox("Add some lyrics — or pick a template.");
+  if(!y && !params.prompt) return alertBox("Describe the music — or pick a template.");
+  if(seed) params.seed=seed;
+  await send({model:state.sing, params, variations:state.singN, title:$("#singTitle").value.trim(), template:state.singTpl}, "#singGo");
+};
+
+/* ── speak ── */
+function renderSpeak(){
+  const m=state.speak;
+  $("#kokoroF").classList.toggle("hidden",m!=="kokoro"); $("#qwenF").classList.toggle("hidden",m!=="qwen3"); $("#voxF").classList.toggle("hidden",m!=="voxcpm2");
+  $("#speakTpl").innerHTML = CFG.templates.speak.filter(t=>t.model===m)
+    .map(t=>`<button class="chip" data-i="${CFG.templates.speak.indexOf(t)}">${t.emoji||""} ${esc(t.name)}</button>`).join("");
+  $$("#speakTpl .chip").forEach(c=>c.onclick=()=>{
+    $$("#speakTpl .chip").forEach(x=>x.classList.toggle("on",x===c));
+    const t=CFG.templates.speak[+c.dataset.i]; state.speakTpl=t.name;
+    $("#speakText").value=t.text||""; countWords();
+    if(t.voice) $("#voice").value=t.voice;
+    if(t.speaker) $("#speaker").value=t.speaker;
+    $("#instruct").value=t.instruct||"";
+    if(t.clone) $("#refDrop").scrollIntoView({behavior:"smooth",block:"center"});
+    $("#speakTitle").value=t.name;
+  });
+}
+function countWords(){ const w=$("#speakText").value.trim().split(/\s+/).filter(Boolean).length;
+  $("#speakCount").textContent = w ? `${w} words · about ${Math.max(1,Math.round(w/2.6))} s of speech` : ""; }
+$("#speakText").oninput=countWords;
+$("#instructAdd").innerHTML = INSTRUCT_ADD.map(s=>`<button>${s}</button>`).join("");
+$$("#instructAdd button").forEach(b=>b.onclick=()=>$("#instruct").value=b.textContent);
+$("#speakGo").onclick = async()=>{
+  const m=state.speak, text=$("#speakText").value.trim(), seed=$("#speakSeed").value.trim();
+  if(!text) return alertBox("Type something to say — or pick a template.");
+  const params={text};
+  if(m==="kokoro") params.voice=$("#voice").value;
+  if(m==="qwen3"){ params.speaker=$("#speaker").value; if($("#instruct").value.trim()) params.instruct=$("#instruct").value.trim(); }
+  if(m==="voxcpm2" && state.ref){ params.ref=state.ref; if($("#refText").value.trim()) params.ref_text=$("#refText").value.trim(); }
+  if(seed) params.seed=seed;
+  await send({model:m, params, variations:state.speakN, title:$("#speakTitle").value.trim(), template:state.speakTpl}, "#speakGo");
+};
+
+/* ── uploads ── */
+function dropper(zone, input, purpose, done){
+  $(zone).onclick=()=>$(input).click();
+  $(zone).ondragover=e=>{e.preventDefault();$(zone).style.borderColor="var(--accent)"};
+  $(zone).ondragleave=()=>$(zone).style.borderColor="";
+  $(zone).ondrop=e=>{e.preventDefault();$(zone).style.borderColor="";if(e.dataTransfer.files[0])up(e.dataTransfer.files[0])};
+  $(input).onchange=()=>$(input).files[0]&&up($(input).files[0]);
+  async function up(f){
+    $(zone).textContent="⏳ uploading "+f.name+"…";
+    try{ const r=await api(`/api/upload?purpose=${purpose}&name=${encodeURIComponent(f.name)}`,{method:"POST",body:f}); done(r,f); }
+    catch(e){ $(zone).textContent="❌ "+e.message; }
+  }
+}
+dropper("#refDrop","#refFile","ref",(r,f)=>{
+  state.ref=r.id; $("#refDrop").innerHTML=`✅ ${esc(f.name)} · ${r.seconds}s <br><small>click to replace</small>`;
+  $("#refNote").innerHTML = r.note ? `<span class="warn">${esc(r.note)}</span>` : "";
+});
+dropper("#asrDrop","#asrFile","audio",async(r,f)=>{
+  $("#asrDrop").innerHTML=`✅ ${esc(f.name)} · ${r.seconds}s — transcribing…`;
+  await send({model:"canary", params:{audio:r.id}, variations:1, title:f.name});
+  setTimeout(()=>$("#asrDrop").innerHTML="📄 Drop or click to add another",1500);
+});
+
+/* ── submit ── */
+async function send(body, btn){
+  const b=btn&&$(btn); if(b){b.disabled=true;}
+  try{ await api("/api/jobs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}); await poll(); }
+  catch(e){ alertBox(e.message); }
+  finally{ if(b) setTimeout(()=>b.disabled=false,600); }
+}
+function alertBox(m){ const d=document.createElement("div"); d.className="job"; d.innerHTML=`<div class="err">${esc(m)}</div>`;
+  $("#feed").prepend(d); setTimeout(()=>d.remove(),5000); }
+
+/* ── feed ── */
+const KIND_EMOJI={sing:"🎵",speak:"🗣️",listen:"📄"};
+function jobHTML(j){
+  const p=j.params||{}, st=j.status;
+  const meta=[j.model, `seed ${p.seed}`, j.device!=null?`card ${j.device}`:"",
+    j.duration_s?`${j.duration_s}s audio`:"", j.wall_s?`${j.wall_s}s to make`:"", j.rtf?`RTF ${j.rtf}${j.cold?" (first after load)":""}`:"", j.switch_s!=null?`${j.switch_s}s to switch`:"",
+    j.sample_rate?`${j.sample_rate/1000} kHz ${j.channels===2?"stereo":"mono"}`:"", j.note||""].filter(Boolean);
+  return `<div class="top"><span>${KIND_EMOJI[j.kind]||""}</span><span class="t">${esc(j.title||j.model)}</span><span class="pill ${st}">${st}</span></div>
+    <div class="meta">${meta.map(esc).join(" · ")}</div>
+    ${st==="running"||st==="queued"?'<div class="bar"><i></i></div>':""}
+    ${j.file?`<audio controls preload="metadata" src="/files/${j.file}"></audio>`:""}
+    ${j.text?`<div class="text-out">${esc(j.text)}</div>`:""}
+    ${j.error?`<div class="err">${esc(j.error)}</div>`:""}
+    <div class="acts">
+      ${j.file?`<a href="/files/${j.file}?dl=1">⬇ download</a>`:""}
+      ${j.kind!=="listen"?`<button data-reuse="${j.id}">↺ reuse settings</button>`:""}
+      ${j.text?`<button data-copy="${j.id}">⧉ copy text</button>`:""}
+      <button data-del="${j.id}">✕</button>
+    </div>`;
+}
+/* Keyed update: a card is rebuilt ONLY when its own job changed. Rewriting the whole
+   feed on every poll destroyed the <audio> element mid-song, so playback stopped at
+   the next refresh (reported 2026-09-18: "can't play a full 1 minute song"). */
+function renderFeed(){
+  const feed=$("#feed");
+  const list = JOBS.filter(j=>state.filter==="all"||j.kind===state.filter);
+  if(!list.length){ feed.innerHTML=`<div class="empty">Nothing yet — pick a template and press create.</div>`; return; }
+  const empty=feed.querySelector(".empty"); if(empty) empty.remove();
+  const have=new Map([...feed.querySelectorAll(":scope > .job[data-id]")].map(n=>[n.dataset.id,n]));
+  const want=new Set(list.map(j=>j.id));
+  have.forEach((n,id)=>{ if(!want.has(id)) n.remove(); });
+  let prev=null;
+  for(const j of list){
+    const sig=JSON.stringify([j.status,j.note,j.file,j.wall_s,j.error,j.text,j.device,j.title]);
+    let n=have.get(j.id);
+    if(!n){ n=document.createElement("div"); n.className="job"; n.dataset.id=j.id; }
+    if(n.dataset.sig!==sig){
+      const a=n.querySelector("audio");
+      if(!(a && !a.paused && j.file)) { n.innerHTML=jobHTML(j); n.dataset.sig=sig; }   // never interrupt a playing take
+    }
+    const at = prev ? prev.nextSibling : feed.firstChild;
+    if(n!==at) feed.insertBefore(n, at);
+    prev=n;
+  }
+}
+$("#feed").addEventListener("click", async e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.del){ await api(`/api/jobs/${b.dataset.del}/delete`,{method:"POST"}); poll(); }
+  else if(b.dataset.copy){ navigator.clipboard.writeText(JOBS.find(j=>j.id===b.dataset.copy).text); }
+  else if(b.dataset.reuse){ reuse(JOBS.find(j=>j.id===b.dataset.reuse)); }
+});
+function reuse(j){
+  const p=j.params||{};
+  if(j.kind==="sing"){
+    $('#tabs [data-tab="sing"]').click(); $(`#singModel [data-m="${j.model}"]`).click();
+    if(j.model==="yue2"){ $("#style").value=p.style||""; $("#lyrics").value=p.lyrics||""; $("#planning").value=p.planning||"melody"; $("#steps").value=p.steps||8; }
+    if(j.model==="minimax"){ $("#style").value=p.style||""; $("#lyrics").value=p.lyrics||""; $("#mmDur").value=p.duration||60; $("#mmDurLbl").textContent=$("#mmDur").value; }
+    else { $("#prompt").value=p.prompt||""; $("#duration").value=p.duration||60; $("#durLbl").textContent=$("#duration").value; }
+    $("#singSeed").value=p.seed; $("#singTitle").value=j.title||""; $("#singAdv").open=true;
+  } else {
+    $('#tabs [data-tab="speak"]').click(); $(`#speakModel [data-m="${j.model}"]`).click();
+    $("#speakText").value=p.text||""; countWords();
+    if(p.voice) $("#voice").value=p.voice; if(p.speaker) $("#speaker").value=p.speaker;
+    $("#instruct").value=p.instruct||""; $("#speakSeed").value=p.seed; $("#speakTitle").value=j.title||"";
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ── compare ── */
+function fillCompare(){
+  const done=JOBS.filter(j=>j.file);
+  const opts=done.map(j=>`<option value="${j.id}">${esc(j.title||j.model)} — ${j.model} · seed ${j.params?.seed} · ${j.duration_s}s</option>`).join("");
+  $("#cmpA").innerHTML=opts; $("#cmpB").innerHTML=opts; if(done[1]) $("#cmpB").value=done[1].id;
+}
+let SESSION=null;
+$("#cmpGo").onclick=async()=>{
+  try{
+    const r=await api("/api/compare",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({a:$("#cmpA").value,b:$("#cmpB").value,question:$("#cmpQ").value||"Which one would you keep?"})});
+    SESSION=r.session; $("#audA").src="/files/"+r.A; $("#audB").src="/files/"+r.B;
+    $("#cmpStage").classList.remove("hidden"); $("#cmpResult").classList.add("hidden");
+  }catch(e){ alertBox(e.message); }
+};
+$$("[data-vote]").forEach(b=>b.onclick=async()=>{
+  try{
+    const r=await api("/api/vote",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({session:SESSION,choice:b.dataset.vote,why:$("#cmpWhy").value,listener:$("#cmpWho").value})});
+    $("#cmpStage").classList.add("hidden");
+    const R=r.revealed;
+    $("#cmpResult").innerHTML=`You chose <b>${b.dataset.vote}</b>.\n\nA was ${esc(R.A.model)} · seed ${R.A.seed}\nB was ${esc(R.B.model)} · seed ${R.B.seed}\n\nSaved to ${esc(r.saved)} — one listener, one judgement.`;
+    $("#cmpResult").classList.remove("hidden");
+  }catch(e){ alertBox(e.message); }
+});
+
+/* ── cards + polling ── */
+const MODEL_NAME={yue2:"YuE2","stable-audio":"Stable Audio",minimax:"MiniMax-Music3",kokoro:"Kokoro",qwen3:"Qwen3",voxcpm2:"VoxCPM2",canary:"Canary"};
+let ST=null;
+function renderCards(){
+  const s=ST||{vram:[]};
+  const what = s.switching ? `<span class="sw">switching → ${MODEL_NAME[s.switching]||s.switching}…</span>`
+             : s.loaded ? `loaded: <b>${MODEL_NAME[s.loaded]||s.loaded}</b>` : `no model loaded`;
+  $("#loaded").innerHTML = what + (s.loaded&&!s.busy&&!s.switching&&!s.queued ? ` <button id="unloadBtn" title="free the cards">unload</button>` : "");
+  const ub=$("#unloadBtn"); if(ub) ub.onclick=async()=>{ ub.disabled=true; await fetch("/api/unload",{method:"POST"}); poll(); };
+  $("#cards").innerHTML=(s.vram||[]).map((r,i)=>{const on=r.used>600;
+    return `<span class="card ${on?"busy":""}" title="${r.used} of ${r.total} MiB · ${r.util}% busy">gpu${i} ${(r.used/1024).toFixed(1)}G</span>`}).join("");
+}
+let timer=null;
+async function poll(){
+  const [r,s]=await Promise.all([api("/api/jobs"),api("/api/status")]); JOBS=r.jobs; ST=s; renderFeed(); renderCards();
+  clearTimeout(timer);
+  timer=setTimeout(poll, JOBS.some(j=>j.status==="queued"||j.status==="running")||s.switching ? 2000 : 10000);
+}
+
+/* ── boot ── */
+(async()=>{
+  CFG=await api("/api/config");
+  const groups={}; CFG.kokoro_voices.forEach(v=>(groups[v[0]]??=[]).push(v));
+  $("#voice").innerHTML=Object.entries(groups).map(([k,vs])=>`<optgroup label="${LANG[k]||k}">${
+    vs.map(v=>`<option value="${v}">${v.slice(3)} · ${v[1]==="f"?"female":"male"}</option>`).join("")}</optgroup>`).join("");
+  $("#voice").value="af_heart";
+  $("#speaker").innerHTML=CFG.qwen3_speakers.map(s=>`<option>${s}</option>`).join("");
+  renderSing(); renderSpeak(); poll();
+  $("#singTpl .chip")?.click();
+})();
+</script>
+</body>
+</html>

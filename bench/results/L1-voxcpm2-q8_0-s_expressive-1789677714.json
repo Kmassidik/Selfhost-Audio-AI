@@ -1,0 +1,49 @@
+{
+  "run_id": "L1-voxcpm2-q8_0-s_expressive-1789677714",
+  "label": "L1 \u00b7 VoxCPM2 \u00b7 q8_0",
+  "level": "L1",
+  "family": "voxcpm2",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "task": "tts",
+  "prompt_id": "s_expressive",
+  "seed": 20260915,
+  "date": "2026-09-18T03:42:05",
+  "wall_s": 10.148,
+  "rtf_wall": 1.6691,
+  "audio": {
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 291840,
+    "duration_s": 6.08,
+    "bytes_per_second": 96000,
+    "sha256": "28a41b93901371a584092dc4b9289dca64a6d3128a27171b5964bebc5921e7c6"
+  },
+  "peak_vram_mib": {
+    "0": 4811,
+    "1": 18,
+    "2": 18
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-release/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "voxcpm2",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/VoxCPM2-GGUF/voxcpm2-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--text",
+    "Wait \u2014 it worked? It actually worked. After all that, it just... worked.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L1-voxcpm2-q8_0-s_expressive-1789677714/out.wav",
+    "--seed",
+    "20260915"
+  ],
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}

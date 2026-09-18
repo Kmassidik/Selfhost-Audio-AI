@@ -1,0 +1,52 @@
+{
+  "run_id": "L0-kokoro_tts-q8_0-s_expressive-1789658733",
+  "label": "L0 \u00b7 Kokoro-82M \u00b7 q8_0",
+  "level": "L0",
+  "family": "kokoro_tts",
+  "quant": "q8_0",
+  "backend": "cuda",
+  "prompt_id": "s_expressive",
+  "seed": 20260915,
+  "date": "2026-09-17T22:25:39",
+  "wall_s": 5.875,
+  "rtf_wall": 1.2567,
+  "audio": {
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_depth": 16,
+    "samples": 112200,
+    "duration_s": 4.675,
+    "bytes_per_second": 48000,
+    "sha256": "add82b21cc62d4f3fdf12ba1161d6d09d6933881c757d57d0a1d800f18602116"
+  },
+  "peak_vram_mib": {
+    "0": 1211,
+    "1": 18,
+    "2": 18
+  },
+  "cmd": [
+    "/root/Desktop/selfhostaudioai/engines/audiocpp/build/linux-cuda-release/bin/audiocpp_cli",
+    "--task",
+    "tts",
+    "--family",
+    "kokoro_tts",
+    "--model",
+    "/root/Desktop/selfhostaudioai/models/gguf/Kokoro-82M-GGUF/kokoro-82m-q8_0.gguf",
+    "--backend",
+    "cuda",
+    "--language",
+    "en-us",
+    "--voice-id",
+    "af_heart",
+    "--text",
+    "Wait \u2014 it worked? It actually worked. After all that, it just... worked.",
+    "--out",
+    "/root/Desktop/selfhostaudioai/runs/L0-kokoro_tts-q8_0-s_expressive-1789658733/out.wav",
+    "--seed",
+    "20260915"
+  ],
+  "caveats": [
+    "VRAM sampled at 5 Hz \u2014 a spike shorter than 200 ms is missed.",
+    "rtf_wall INCLUDES model load and CUDA warmup. For the one-shot CLI that is most of it \u2014 see rtf_generate in the two-length fit."
+  ]
+}
