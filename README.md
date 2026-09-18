@@ -35,3 +35,4 @@ Status: **35-chapter guide complete, plus Part VII (R&D) — 38 chapters, 10 exp
 
 **Not done, and cannot be from here:** nothing has been listened to by a person.
 See [chapter 35](knowledge-base/35-the-scorecard.html).
+# Selfhost-Audio-AI
