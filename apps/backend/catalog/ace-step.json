@@ -1,0 +1,54 @@
+{
+  "id": "ace-step",
+  "enabled": true,
+  "name": "ACE-Step 1.5",
+  "kind": "sing",
+  "outcome": {
+    "title": "ACE-Step 1.5",
+    "blurb": "Songs with vocals, up to 30 seconds. One card, faster than real time.",
+    "icon": "M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0z",
+    "order": 3
+  },
+  "traits": {
+    "vocals": true,
+    "best_for": "Short vocal ideas, quickly",
+    "max_minutes": 0.5,
+    "cards_note": "one card"
+  },
+  "engine": "audiocpp",
+  "run": {
+    "task": "gen",
+    "family": "ace_step",
+    "gguf": "ACE-Step1.5-GGUF/turbo/ace-step-1.5-turbo-q4k-lmq6.gguf",
+    "args": [
+      "--task-route",
+      "text2music",
+      "--text",
+      "{style}",
+      "--lyrics",
+      "{lyrics}",
+      "--duration-seconds",
+      "{duration}",
+      "--session-option",
+      "ace_step.mem_saver=true"
+    ]
+  },
+  "fields": [
+    "style",
+    "lyrics",
+    "duration"
+  ],
+  "limits": {
+    "max_duration": 30,
+    "min_duration": 5
+  },
+  "cards": 1,
+  "rate": 0.7,
+  "notes": [
+    "4-bit with a 6-bit planner plus mem_saver: experiment 16",
+    "60 s and longer runs out of memory on the timbre encoder"
+  ],
+  "required": [
+    "style"
+  ]
+}

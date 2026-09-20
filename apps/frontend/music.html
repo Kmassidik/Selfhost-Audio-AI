@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Music Studio</title>
+<meta name="description" content="Songs made on three second-hand graphics cards.">
+<meta name="theme-color" content="#0c0a0f">
+<link rel="stylesheet" href="/vendor/tailwind.min.css">
+<style>
+  :root{
+    --bg:#0c0a0f; --panel:#15121b; --panel2:#1e1926; --line:#2a2333;
+    --ink:#f3eef7; --dim:#a79db6; --accent:#ff8a3d;
+  }
+  html,body{background:var(--bg);color:var(--ink)}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+       -webkit-font-smoothing:antialiased}
+  .panel{background:var(--panel)} .panel2{background:var(--panel2)}
+  .line{border-color:var(--line)} .dim{color:var(--dim)}
+  .accent{color:var(--accent)}
+  .scroll::-webkit-scrollbar{width:10px;height:10px}
+  .scroll::-webkit-scrollbar-thumb{background:#2f2839;border-radius:99px}
+  .scroll::-webkit-scrollbar-track{background:transparent}
+  .card:hover .play{opacity:1;transform:translateY(0)}
+  /* The details button is the way back into the drawer, so it is the one
+     quiet control that is allowed to glow. */
+  #npToggle{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 55%,transparent);
+    box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent),
+               0 0 14px color-mix(in srgb,var(--accent) 22%,transparent);
+    transition:box-shadow .2s,background .2s,color .2s}
+  #npToggle:hover{color:#fff;background:color-mix(in srgb,var(--accent) 16%,transparent);
+    box-shadow:0 0 0 1px var(--accent),0 0 20px color-mix(in srgb,var(--accent) 38%,transparent)}
+  #npToggle[aria-pressed="true"]{background:var(--accent);color:#1a1020;border-color:var(--accent);
+    box-shadow:0 0 22px color-mix(in srgb,var(--accent) 45%,transparent)}
+  .play{opacity:0;transform:translateY(6px);transition:opacity .16s ease,transform .16s ease}
+  @media (prefers-reduced-motion:reduce){.play{transition:none}}
+  input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer}
+  input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:99px;
+    background:linear-gradient(to right,var(--accent) var(--p,0%),#3a3346 var(--p,0%))}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;margin-top:-4px;
+    border-radius:99px;background:#fff;opacity:0;transition:opacity .15s}
+  input[type=range]:hover::-webkit-slider-thumb,input[type=range]:focus-visible::-webkit-slider-thumb{opacity:1}
+  input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:#3a3346}
+  input[type=range]::-moz-range-progress{height:4px;border-radius:99px;background:var(--accent)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .marquee{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+</head>
+<body class="h-full overflow-hidden">
+<div class="flex h-full flex-col">
+
+  <div class="flex min-h-0 flex-1">
+    <!-- ── sidebar ─────────────────────────────────────────────── -->
+    <aside id="sidebar" class="panel scroll hidden w-64 shrink-0 flex-col overflow-y-auto border-r line md:flex">
+      <div class="px-5 pb-3 pt-5">
+        <div class="flex items-center gap-2">
+          <span class="grid h-8 w-8 place-items-center rounded-lg" style="background:linear-gradient(135deg,#ff8a3d,#c2410c)">
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="#1a1020"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+          </span>
+          <div class="leading-tight">
+            <div class="text-[15px] font-semibold">Music Studio</div>
+            <div class="text-[11px] dim">made on three cards</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="px-2" id="nav"></nav>
+
+      <div class="mt-5 flex items-center justify-between px-5 pb-2">
+        <span class="text-[13px] font-semibold dim">Playlists</span>
+        <button id="newPlaylist" title="New playlist" class="rounded-full px-2 py-1 text-lg leading-none dim hover:text-white">+</button>
+      </div>
+      <div id="playlists" class="px-2 pb-6"></div>
+
+      <div class="mt-auto border-t line px-5 py-4 text-[11px] dim">
+        <div id="libStats">—</div>
+        <div class="mt-2 flex items-center gap-3">
+          <a href="/create" class="hover:text-white">Create</a>
+          <button id="ownerBtn" class="hover:text-white">Sign in</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── main ────────────────────────────────────────────────── -->
+    <main class="scroll relative min-w-0 flex-1 overflow-y-auto">
+      <div class="flex items-center justify-between px-4 pb-1 pt-4 md:hidden">
+        <h1 id="greeting" class="text-2xl font-bold tracking-tight">Good evening</h1>
+        <button id="menuBtn2" class="dim" aria-label="Menu">
+          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4m7.4 2 1.9-1.5-1.5-2.6-2.3.8a7.6 7.6 0 0 0-1.6-.9L15.5 5h-3l-.4 2.4c-.6.2-1.1.5-1.6.9l-2.3-.8-1.5 2.6L8.6 12c0 .3-.1.6-.1.9l-1.9 1.5 1.5 2.6 2.3-.8c.5.4 1 .7 1.6.9l.4 2.4h3l.4-2.4c.6-.2 1.1-.5 1.6-.9l2.3.8 1.5-2.6-1.9-1.5c0-.3.1-.6.1-.9s0-.6-.1-.9"/></svg>
+        </button>
+      </div>
+
+      <header class="sticky top-0 z-20 flex items-center gap-3 px-4 py-3 backdrop-blur md:px-7"
+              style="background:rgba(12,10,15,.86)">
+        <button id="menuBtn" class="panel2 grid h-9 w-9 place-items-center rounded-lg md:hidden" aria-label="Menu">
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+        </button>
+        <div class="relative min-w-0 flex-1 md:max-w-md">
+          <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 dim" fill="currentColor">
+            <path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2m0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12"/></svg>
+          <input id="q" type="search" placeholder="Search songs, styles, lyrics"
+                 class="panel2 w-full rounded-full border line py-2 pl-9 pr-3 text-sm outline-none placeholder:text-[#7e738d]">
+        </div>
+        <select id="sort" class="panel2 rounded-full border line px-3 py-2 text-sm" title="Order the library">
+          <option value="new">Newest</option><option value="old">Oldest</option>
+          <option value="liked">Liked first</option><option value="played">Most played</option>
+          <option value="long">Longest</option><option value="short">Shortest</option>
+          <option value="title">Title</option>
+          <option value="random">Shuffle</option>
+        </select>
+        <button id="reshuffle" class="panel2 hidden shrink-0 rounded-full border line px-3 py-2 text-sm hover:border-white/30"
+                title="Shuffle again">
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M17 3l4 4-4 4V8h-2.5l-2 2.8-1.5-2.1L13.3 6H17V3zM3 6h4.2l6.3 9H17v-3l4 4-4 4v-3h-4.5l-6.3-9H3V6zm0 12h4.2l1.9-2.7 1.5 2.1L8.8 20H3v-2z"/></svg>
+        </button>
+      </header>
+
+      <div class="px-4 pb-40 md:px-7">
+        <div id="chips" class="sticky top-[60px] z-10 -mx-4 mb-1 flex gap-2 overflow-x-auto px-4 py-2 md:-mx-7 md:px-7"
+             style="background:rgba(12,10,15,.86);scrollbar-width:none"></div>
+        <section id="hero" class="mb-7 hidden"></section>
+        <div id="rows"></div>
+        <h2 id="gridTitle" class="mb-3 mt-2 text-xl font-semibold">All songs</h2>
+        <div id="grid" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"></div>
+        <div id="more" class="py-8 text-center text-sm dim"></div>
+      </div>
+    </main>
+
+    <!-- ── now playing: a drawer, not a column ──────────────────── -->
+    <div id="npScrim" class="fixed inset-0 z-40 hidden bg-black/50 backdrop-blur-[2px]"></div>
+    <aside id="np" class="panel scroll fixed right-0 top-0 z-50 h-full w-[24rem] max-w-[92vw] translate-x-full overflow-y-auto border-l line pb-28 shadow-2xl transition-transform duration-200"></aside>
+  </div>
+
+  <!-- ── player ────────────────────────────────────────────────── -->
+  <footer id="player" class="panel fixed inset-x-2 bottom-[4.6rem] z-30 overflow-hidden rounded-2xl border line px-3 py-2 shadow-2xl
+                             md:static md:inset-x-auto md:bottom-auto md:rounded-none md:border-x-0 md:border-b-0 md:border-t md:px-5 md:shadow-none"
+          style="padding-bottom:max(.5rem,env(safe-area-inset-bottom))">
+    <div class="flex items-center gap-2 md:gap-3">
+      <div class="flex min-w-0 flex-1 items-center gap-3 md:w-72 md:flex-none">
+        <button id="pbOpen" title="Song details" class="flex min-w-0 items-center gap-3 text-left">
+          <img id="pbCover" alt="" class="h-12 w-12 shrink-0 rounded-md object-cover panel2" style="background:#1e1926">
+          <div class="min-w-0">
+            <div id="pbTitle" class="marquee text-sm font-medium">Nothing playing</div>
+            <div id="pbSub" class="marquee text-xs dim">Pick a song to start</div>
+          </div>
+        </button>
+        <button id="pbLike" title="Like" class="ml-1 hidden shrink-0 dim hover:text-white">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9z"/></svg>
+        </button>
+      </div>
+
+      <div class="flex min-w-0 flex-none flex-col items-center gap-1 md:flex-1">
+        <div class="flex items-center gap-3 md:gap-4">
+          <button id="pbShuffle" title="Shuffle" class="hidden dim hover:text-white sm:block">
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M17 3l4 4-4 4V8h-2.2l-2 3-1.2-1.8L13.8 6H17V3zM3 6h4.5l6.3 9H17v-3l4 4-4 4v-3h-4.2L6.5 8H3V6zm0 10h4.2l1.6-2.4 1.2 1.8L8.2 18H3v-2z"/></svg>
+          </button>
+          <button id="pbPrev" title="Previous" class="hidden dim hover:text-white sm:block">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M6 5h2v14H6zm12 0v14l-9-7z"/></svg>
+          </button>
+          <button id="pbPlay" title="Play" class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white text-black transition hover:scale-105 md:h-10 md:w-10">
+            <svg id="pbPlayIcon" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button id="pbNext" title="Next" class="dim hover:text-white">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M16 5h2v14h-2zM6 5l9 7-9 7z"/></svg>
+          </button>
+          <button id="pbRepeat" title="Repeat" class="hidden dim hover:text-white sm:block">
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M7 7h9V4l5 4-5 4V9H9v4H7V7zm10 10H8v3l-5-4 5-4v3h8v-4h2v6z"/></svg>
+          </button>
+        </div>
+        <div class="hidden w-full max-w-xl items-center gap-2 md:flex">
+          <span id="pbAt" class="w-10 text-right text-[11px] tabular-nums dim">0:00</span>
+          <input id="pbSeek" type="range" min="0" max="1000" value="0" class="h-1 w-full" aria-label="Seek">
+          <span id="pbEnd" class="w-10 text-[11px] tabular-nums dim">0:00</span>
+        </div>
+      </div>
+
+      <div class="flex w-auto shrink-0 items-center justify-end gap-2 md:w-40">
+        <button id="npToggle" title="Song details" aria-pressed="false"
+                class="flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium md:px-3">
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M3 5h12v2H3zm0 6h12v2H3zm0 6h8v2H3zM19 3h2v13.6a3 3 0 1 1-2-2.8V3z"/></svg>
+          <span class="hidden sm:inline">Details</span>
+        </button>
+        <button id="pbMute" title="Mute" aria-pressed="false" class="hidden shrink-0 dim hover:text-white md:block">
+          <svg id="pbVolIcon" viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="currentColor"></svg>
+        </button>
+        <input id="pbVol" type="range" min="0" max="100" value="100" class="hidden h-1 w-24 shrink-0 md:block" aria-label="Volume">
+      </div>
+    </div>
+
+    <!-- a phone has no room for a seek line beside the controls; it gets one under them -->
+    <div class="mt-1.5 flex items-center gap-2 md:hidden">
+      <span id="pbAtPhone" class="w-9 text-right text-[10px] tabular-nums dim">0:00</span>
+      <input id="pbSeekPhone" type="range" min="0" max="1000" value="0" class="h-1 w-full" aria-label="Seek">
+      <span id="pbEndPhone" class="w-9 text-[10px] tabular-nums dim">0:00</span>
+    </div>
+  </footer>
+</div>
+
+<!-- the bottom tabs: a phone navigates with these, a desktop with the sidebar -->
+<nav id="tabs" class="fixed inset-x-0 bottom-0 z-30 flex items-stretch border-t line md:hidden"
+     style="background:rgba(12,10,15,.96);padding-bottom:env(safe-area-inset-bottom)">
+  <button data-tab="home" class="flex flex-1 flex-col items-center gap-1 py-2 text-[11px]">
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M12 3 3 10.5V21h6v-6h6v6h6V10.5z"/></svg>Home</button>
+  <button data-tab="search" class="flex flex-1 flex-col items-center gap-1 py-2 text-[11px]">
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2m0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12"/></svg>Search</button>
+  <button data-tab="library" class="flex flex-1 flex-col items-center gap-1 py-2 text-[11px]">
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M4 4h2v16H4zm5 0h2v16H9zm6 .6 1.9-.5 4.1 15.4-1.9.5z"/></svg>Your Library</button>
+  <a href="/create" class="flex flex-1 flex-col items-center gap-1 py-2 text-[11px]">
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>Create</a>
+</nav>
+
+<audio id="audio" preload="metadata"></audio>
+
+<dialog id="modal" class="w-[min(26rem,92vw)] rounded-2xl border line p-0 text-white backdrop:bg-black/60" style="background:var(--panel)">
+  <form method="dialog" id="modalForm" class="p-5">
+    <h3 id="modalTitle" class="text-base font-semibold"></h3>
+    <p id="modalMsg" class="mt-1 text-sm dim"></p>
+    <div id="modalField" class="mt-4"></div>
+    <div class="mt-5 flex justify-end gap-2">
+      <button value="" class="rounded-full px-4 py-2 text-sm dim hover:text-white">Cancel</button>
+      <button id="modalOk" value="ok" class="rounded-full px-5 py-2 text-sm font-semibold text-black" style="background:var(--accent)">OK</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* ── tiny helpers ───────────────────────────────────────────── */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const mmss = s => (s = Math.max(0, Math.round(s || 0)), `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`);
+const KEY = "musicstudio.owner";
+const owner = () => localStorage.getItem(KEY) || "";
+const authHeaders = () => owner() ? {"Authorization": "Bearer " + owner()} : {};
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, {...opts, headers: {"Content-Type": "application/json", ...authHeaders(), ...(opts.headers||{})}});
+  if (!r.ok) throw Object.assign(new Error((await r.json().catch(()=>({}))).detail || r.statusText), {status: r.status});
+  return r.status === 204 ? null : r.json();
+}
+
+const MODEL = {
+  minimax:  {name: "MiniMax-Music3", hue: "#ff8a3d"},
+  yue2:     {name: "YuE2",           hue: "#7c5cff"},
+  "stable-audio": {name: "Stable Audio", hue: "#2dd4bf"},
+  kokoro:   {name: "Kokoro",   hue: "#f472b6"},
+  qwen3:    {name: "Qwen3-TTS", hue: "#60a5fa"},
+  voxcpm2:  {name: "VoxCPM2",  hue: "#facc15"},
+};
+const modelOf = m => MODEL[m] || {name: m || "unknown", hue: "#8b8b8b"};
+
+/* ── state ──────────────────────────────────────────────────── */
+const state = {
+  view: {kind: "all"},            // all | liked | model | playlist | tag
+  tag: "",
+  q: "", sort: "new", seed: Math.floor(Math.random() * 1e9),
+  offset: 0, limit: 50, total: 0, loading: false, done: false,
+  items: [], queue: [], at: -1, shuffle: false, repeat: "off", playlists: [],
+};
+const audio = $("#audio");
+
+/* ── library loading, paged ─────────────────────────────────── */
+function libraryUrl(offset) {
+  const p = new URLSearchParams({offset, limit: state.limit, sort: state.sort});
+  // One seed per shuffle: without it every page of a shuffled library is a new
+  // shuffle, and the same song turns up twice while another never appears.
+  if (state.sort === "random") p.set("seed", state.seed);
+  if (state.q) p.set("q", state.q);
+  if (state.view.kind === "liked") p.set("liked", "true");
+  if (state.view.kind === "model") p.set("model", state.view.model);
+  if (state.view.kind === "playlist") p.set("ids", (state.view.ids || []).join(","));
+  if (state.view.kind === "tag") p.set("tag", state.view.tag);
+  return "/api/library?" + p;
+}
+
+async function loadPage(reset = false) {
+  if (state.loading || (state.done && !reset)) return;
+  state.loading = true;
+  if (reset) { state.offset = 0; state.done = false; state.items = []; $("#grid").innerHTML = ""; }
+  $("#more").textContent = "Loading…";
+  try {
+    const page = await api(libraryUrl(state.offset));
+    state.total = page.total;
+    state.items = state.items.concat(page.items);
+    appendCards(page.items);
+    state.offset += page.items.length;
+    state.done = state.offset >= page.total || page.items.length === 0;
+    $("#more").textContent = state.done
+      ? (state.total ? `${state.total} song${state.total === 1 ? "" : "s"}` : "")
+      : "";
+    if (!state.total) emptyState();
+  } catch (e) {
+    $("#more").textContent = "Could not load the library: " + e.message;
+  } finally { state.loading = false; }
+}
+
+function emptyState() {
+  const what = state.q ? `Nothing matches “${esc(state.q)}”.`
+             : state.view.kind === "liked" ? "No liked songs yet. Tap the heart on a song."
+             : "No songs yet.";
+  $("#grid").innerHTML = `<div class="col-span-full rounded-xl border line p-8 text-center">
+      <div class="text-sm dim">${what}</div>
+      <a href="/create" class="mt-3 inline-block rounded-full px-4 py-2 text-sm font-medium text-black" style="background:var(--accent)">Make a song</a>
+    </div>`;
+}
+
+const HEART = (filled, cls = "h-5 w-5") => filled
+  ? `<svg viewBox="0 0 24 24" class="${cls}" fill="currentColor" style="color:var(--accent)"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9z"/></svg>`
+  : `<svg viewBox="0 0 24 24" class="${cls}" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9z"/></svg>`;
+
+/* The two things you do to a song you are hearing: keep it, and file it.
+   They sit on the artwork so they are reachable from the grid, the rows and
+   the phone — not only from the player bar. */
+function songButtons(s, small = false) {
+  const size = small ? "h-8 w-8" : "h-9 w-9";
+  const icon = small ? "h-4 w-4" : "h-[18px] w-[18px]";
+  return `<div class="absolute left-2 top-2 flex gap-1.5 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100 [@media(hover:none)]:opacity-100">
+    <button data-likebtn="${s.id}" aria-pressed="${!!s.liked}" title="${s.liked ? "Remove from liked" : "Like"}"
+            class="grid ${size} place-items-center rounded-full bg-black/55 backdrop-blur hover:bg-black/75">${HEART(s.liked, icon)}</button>
+    <button data-addto="${s.id}" title="Add to playlist"
+            class="grid ${size} place-items-center rounded-full bg-black/55 backdrop-blur hover:bg-black/75">
+      <svg viewBox="0 0 24 24" class="${icon}" fill="currentColor"><path d="M14 10H3v2h11v-2zm0-4H3v2h11V6zM3 16h7v-2H3v2zm13-2v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2z"/></svg>
+    </button>
+  </div>`;
+}
+
+/* ── cards ──────────────────────────────────────────────────── */
+function cardHTML(s) {
+  const m = modelOf(s.model);
+  return `<article class="card group rounded-xl p-3 transition hover:bg-[#1b1723]" data-id="${s.id}">
+    <div class="relative mb-3 aspect-square overflow-hidden rounded-lg panel2">
+      <img loading="lazy" alt="" src="/media/covers/${s.id}.png?v=${s.cover_v || 0}"
+           onerror="this.style.background='linear-gradient(140deg,${m.hue},#1b1226)';this.removeAttribute('src')"
+           class="h-full w-full object-cover">
+      <button class="play absolute bottom-2 right-2 grid h-11 w-11 place-items-center rounded-full text-black shadow-lg"
+              style="background:var(--accent)" data-play="${s.id}" aria-label="Play ${esc(s.title)}">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      ${songButtons(s)}
+    </div>
+    <div class="truncate text-sm font-medium">${esc(s.title)}</div>
+    <div class="mt-1 truncate text-[11px] dim">${esc((s.tags || [])[0] || "Song")} · <span class="tabular-nums">${mmss(s.seconds)}</span></div>
+  </article>`;
+}
+
+function appendCards(items) {
+  if (!items.length) return;
+  $("#grid").insertAdjacentHTML("beforeend", items.map(cardHTML).join(""));
+}
+
+/* ── playing ────────────────────────────────────────────────── */
+function songById(id) { return state.items.find(s => s.id === id); }
+
+function playSong(id, queue) {
+  const s = songById(id); if (!s) return;
+  state.queue = queue || state.items.map(x => x.id);
+  state.at = state.queue.indexOf(id);
+  audio.src = `/media/mp3/${id}.mp3`;
+  audio.play().catch(() => {});
+  paintPlayer(s);
+  paintNowPlaying(s);
+  api(`/api/play/${id}`, {method: "POST", body: JSON.stringify({seconds: 0})}).catch(() => {});
+}
+
+function paintPlayer(s) {
+  const m = modelOf(s.model);
+  $("#pbTitle").textContent = s.title;
+  $("#pbSub").textContent = `${(s.tags || [])[0] || "Song"} · ${mmss(s.seconds)}`;
+  const img = $("#pbCover");
+  img.src = `/media/covers/${s.id}.png?v=${s.cover_v || 0}`;
+  img.onerror = () => { img.removeAttribute("src"); img.style.background = `linear-gradient(140deg,${m.hue},#1b1226)`; };
+  $("#pbLike").classList.remove("hidden");
+  $("#pbLike").dataset.id = s.id;
+  paintLike(s.liked);
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: s.title, artist: m.name, album: "Music Studio",
+      artwork: [{src: `/media/covers/${s.id}.png?v=${s.cover_v || 0}`, sizes: "1280x720", type: "image/png"}],
+    });
+    navigator.mediaSession.playbackState = "playing";
+  }
+  document.title = `${s.title} · Music Studio`;
+  tintPlayer(s);
+}
+
+function paintLike(liked) {
+  const b = $("#pbLike");
+  b.innerHTML = HEART(liked);
+  b.title = liked ? "Remove from liked" : "Like";
+  b.setAttribute("aria-pressed", String(!!liked));
+}
+
+/* One song can be on screen three times — a card, a row, the now-playing
+   column — and a like must show on all of them without reloading the page. */
+async function toggleLike(id) {
+  const s = songById(id);
+  const liked = !(s?.liked ?? document.querySelector(`[data-likebtn="${id}"]`)?.getAttribute("aria-pressed") === "true");
+  await api(`/api/like/${id}`, {method: liked ? "POST" : "DELETE"}).catch(() => {});
+  if (s) s.liked = liked;
+  document.querySelectorAll(`[data-likebtn="${id}"]`).forEach(b => {
+    b.setAttribute("aria-pressed", String(liked));
+    b.title = liked ? "Remove from liked" : "Like";
+    const label = b.querySelector("span");
+    b.innerHTML = HEART(liked, label ? "h-4 w-4" : b.dataset.small ? "h-4 w-4" : "h-[18px] w-[18px]")
+                + (label ? `<span>${liked ? "Liked" : "Like"}</span>` : "");
+  });
+  if ($("#pbLike").dataset.id === id) paintLike(liked);
+  toast(liked ? "Liked" : "Removed from liked");
+  if (state.view.kind === "liked") loadPage(true);
+}
+
+function emptyNowPlaying() {
+  $("#np").innerHTML = "";
+}
+
+/* The details column is a preference, not a state of the app: once someone
+   closes it, it stays closed until they ask for it back — including after a
+   reload, and including when the next song starts. */
+const NP_KEY = "musicstudio.np";
+function showNowPlaying(open) {
+  localStorage.setItem(NP_KEY, open ? "open" : "closed");
+  // Asking for the panel when nothing has played yet used to do nothing at
+  // all, which reads as a broken button. It opens and says why it is empty.
+  if (open) {
+    const s = songById(state.queue[state.at]) || songById($("#pbLike").dataset.id) || state.items[0];
+    // Paint it, but do not let the painter decide whether it is visible: it
+    // opens by itself only on a wide screen, and this is someone asking for
+    // it by hand. The toggle at the end of this function has the last word.
+    if (s) paintNowPlaying(s);
+    else
+      $("#np").innerHTML = `<div class="sticky top-0 flex items-center justify-between border-b line px-5 py-3 panel">
+        <span class="text-xs uppercase tracking-wide dim">Now playing</span>
+        <button id="npClose" title="Close" aria-label="Close now playing"
+                class="grid h-7 w-7 place-items-center rounded-full dim hover:bg-white/10 hover:text-white">
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+        </button>
+      </div>
+      <p class="p-5 text-sm dim">Nothing playing yet. Pick a song and its words, cover and details appear here.</p>`;
+  }
+  $("#np").classList.toggle("translate-x-full", !open);
+  $("#npScrim").classList.toggle("hidden", !open);
+  $("#npToggle").setAttribute("aria-pressed", String(open));
+  document.body.classList.toggle("overflow-hidden", open && window.innerWidth < 1024);
+}
+const npOpen = () => !$("#np").classList.contains("translate-x-full");
+
+async function paintNowPlaying(s) {
+  const m = modelOf(s.model);
+  const full = await api(`/api/song/${s.id}`).catch(() => s);
+  const lyrics = (full.lyrics || "").trim();
+  $("#np").innerHTML = `
+    <div class="sticky top-0 z-10 flex items-center justify-between border-b line px-5 py-3 panel">
+      <span class="text-xs uppercase tracking-wide dim">Now playing</span>
+      <button id="npClose" title="Close" aria-label="Close now playing"
+              class="grid h-7 w-7 place-items-center rounded-full dim hover:bg-white/10 hover:text-white">
+        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+      </button>
+    </div>
+    <div class="p-5">
+      <img alt="" src="/media/covers/${s.id}.png?v=${s.cover_v || 0}"
+           onerror="this.style.background='linear-gradient(140deg,${m.hue},#1b1226)';this.removeAttribute('src')"
+           class="mb-4 aspect-square w-full rounded-xl object-cover panel2">
+      <div class="text-lg font-semibold leading-tight">${esc(full.title)}</div>
+      <div class="mt-1 flex flex-wrap items-center gap-2 text-xs dim">
+        <span class="tabular-nums">${mmss(full.seconds)}</span>
+        ${(full.tags || []).slice(0, 3).map(t => `<span class="rounded-full border line px-2 py-0.5">${esc(t)}</span>`).join("")}
+      </div>
+      ${full.style ? `<p class="mt-4 text-xs leading-relaxed dim">${esc(full.style)}</p>` : ""}
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button data-likebtn="${full.id}" aria-pressed="${!!full.liked}"
+                class="panel2 flex items-center gap-1.5 rounded-full border line px-3 py-1.5 text-xs hover:text-white">
+          ${HEART(full.liked, "h-4 w-4")}<span>${full.liked ? "Liked" : "Like"}</span></button>
+        <button data-addto="${full.id}" class="panel2 rounded-full border line px-3 py-1.5 text-xs hover:text-white">Add to playlist</button>
+        <button data-video="${full.id}" class="panel2 rounded-full border line px-3 py-1.5 text-xs hover:text-white">Save as video</button>
+      </div>
+      ${lyrics ? `<h3 class="mt-6 text-sm font-semibold">Lyrics</h3>
+        <pre class="mt-2 whitespace-pre-wrap text-[13px] leading-relaxed dim" style="font-family:inherit">${esc(lyrics)}</pre>` : ""}
+    </div>`;
+}
+
+function step(delta) {
+  if (!state.queue.length) return;
+  let i = state.at + delta;
+  if (state.shuffle) i = Math.floor(Math.random() * state.queue.length);
+  if (i >= state.queue.length) i = 0;
+  if (i < 0) i = state.queue.length - 1;
+  playSong(state.queue[i], state.queue);
+}
+
+/* ── player wiring ──────────────────────────────────────────── */
+$("#pbPlay").onclick = () => audio.paused ? audio.play() : audio.pause();
+$("#pbNext").onclick = () => step(1);
+$("#pbPrev").onclick = () => (audio.currentTime > 3 ? (audio.currentTime = 0) : step(-1));
+$("#pbShuffle").onclick = e => { state.shuffle = !state.shuffle; e.currentTarget.style.color = state.shuffle ? "var(--accent)" : ""; };
+$("#pbRepeat").onclick = e => {
+  state.repeat = state.repeat === "off" ? "all" : state.repeat === "all" ? "one" : "off";
+  e.currentTarget.style.color = state.repeat === "off" ? "" : "var(--accent)";
+  e.currentTarget.title = "Repeat: " + state.repeat;
+};
+audio.onplay = () => { $("#pbPlayIcon").innerHTML = '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'; $("#pbPlay").title = "Pause"; };
+audio.onpause = () => { $("#pbPlayIcon").innerHTML = '<path d="M8 5v14l11-7z"/>'; $("#pbPlay").title = "Play"; };
+audio.onended = () => {
+  if (state.repeat === "one") { audio.currentTime = 0; audio.play(); return; }
+  if (state.at === state.queue.length - 1 && state.repeat === "off") return;
+  step(1);
+};
+/* Two seek lines — one beside the controls on a desktop, one under them on a
+   phone — driven by the same clock, so whichever is on screen is right. */
+const SEEKS = [["#pbSeek", "#pbAt", "#pbEnd"], ["#pbSeekPhone", "#pbAtPhone", "#pbEndPhone"]];
+audio.ontimeupdate = () => {
+  const d = audio.duration || 0;
+  for (const [bar, at, end] of SEEKS) {
+    $(at).textContent = mmss(audio.currentTime);
+    $(end).textContent = mmss(d);
+    if (!d) continue;
+    const part = audio.currentTime / d;
+    $(bar).value = part * 1000;
+    $(bar).style.setProperty("--p", part * 100 + "%");
+  }
+};
+for (const [bar] of SEEKS) {
+  $(bar).oninput = e => { if (audio.duration) audio.currentTime = (e.target.value / 1000) * audio.duration; };
+}
+const VOL = {
+  loud:  "M4 9h3l5-4v14l-5-4H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM16 2.2v2.1a7.8 7.8 0 0 1 0 15.4v2.1a9.9 9.9 0 0 0 0-19.6z",
+  quiet: "M4 9h3l5-4v14l-5-4H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z",
+  off:   "M4 9h3l5-4v14l-5-4H4zm17.3-1.3-1.4-1.4L17 9.2l-2.9-2.9-1.4 1.4L15.6 10.6l-2.9 2.9 1.4 1.4 2.9-2.9 2.9 2.9 1.4-1.4-2.9-2.9z",
+};
+function paintVolume() {
+  const v = audio.volume, off = audio.muted || v === 0;
+  $("#pbVolIcon").innerHTML = `<path d="${off ? VOL.off : v > 0.5 ? VOL.loud : VOL.quiet}"/>`;
+  $("#pbVolIcon").parentElement.title = off ? "Unmute" : "Mute";
+  $("#pbVolIcon").parentElement.setAttribute("aria-pressed", String(off));
+  $("#pbVolIcon").style.color = off ? "#7e738d" : "";
+  const shown = off ? 0 : Math.round(v * 100);
+  $("#pbVol").value = shown;
+  $("#pbVol").style.setProperty("--p", shown + "%");
+}
+$("#pbVol").oninput = e => {
+  audio.muted = false;
+  audio.volume = e.target.value / 100;
+  paintVolume();
+};
+let volumeBefore = 1;
+$("#pbMute").onclick = () => {
+  if (audio.muted || audio.volume === 0) {
+    audio.muted = false;
+    audio.volume = volumeBefore || 1;
+  } else {
+    volumeBefore = audio.volume;
+    audio.muted = true;
+  }
+  paintVolume();
+};
+paintVolume();
+$("#pbLike").onclick = e => toggleLike(e.currentTarget.dataset.id);
+
+/* ── clicks in the grid ─────────────────────────────────────── */
+document.addEventListener("click", async e => {
+  const like = e.target.closest("[data-likebtn]");
+  if (like) { e.stopPropagation(); return toggleLike(like.dataset.likebtn); }
+
+  const addto = e.target.closest("[data-addto]");
+  if (addto) { e.stopPropagation(); return addToPlaylist(addto.dataset.addto); }
+
+  const play = e.target.closest("[data-play]");
+  if (play) { playSong(play.dataset.play); return; }
+  const card = e.target.closest(".card");
+  if (card) { playSong(card.dataset.id); return; }
+
+  const vid = e.target.closest("[data-video]");
+  if (vid) {
+    if (!owner()) return signIn("Saving a video needs the owner password.");
+    try {
+      const r = await api(`/api/video/${vid.dataset.video}`, {method: "POST"});
+      toast(r.ready ? "Video ready" : "Making the video — it will appear in a moment");
+    } catch (err) { toast(err.message); }
+  }
+});
+
+/* ── search, sort, views ────────────────────────────────────── */
+let t = null;
+$("#q").oninput = e => {
+  clearTimeout(t); state.q = e.target.value.trim();
+  t = setTimeout(() => { paintHome(); loadPage(true); }, 200);
+};
+$("#sort").onchange = e => {
+  state.sort = e.target.value;
+  if (state.sort === "random") state.seed = Math.floor(Math.random() * 1e9);
+  $("#reshuffle").classList.toggle("hidden", state.sort !== "random");
+  loadPage(true);
+};
+$("#reshuffle").onclick = () => {
+  state.seed = Math.floor(Math.random() * 1e9);
+  loadPage(true);
+  toast("Shuffled");
+};
+$("main").addEventListener("scroll", e => {
+  const el = e.currentTarget;
+  if (el.scrollTop + el.clientHeight > el.scrollHeight - 600) loadPage();
+});
+
+function setView(view, title) {
+  state.view = view;
+  state.tag = view.kind === "tag" ? view.tag : "";
+  paintHero();
+  paintHome();
+  paintChips();
+  $("#gridTitle").textContent = title;
+  document.querySelectorAll("#nav button, #playlists button").forEach(b => b.classList.remove("bg-[#241d2f]"));
+  const active = document.querySelector(`[data-view='${view.kind}${view.model || view.id || ""}']`);
+  if (active) active.classList.add("bg-[#241d2f]");
+  loadPage(true);
+}
+
+async function paintHero() {
+  $("#hero").classList.add("hidden");                      // the home rows do this job now
+  return;
+  const {items} = await api("/api/library?limit=3&sort=new").catch(() => ({items: []}));
+  if (!items.length) return;
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  $("#hero").innerHTML = `
+    <h1 class="mb-3 mt-5 text-2xl font-semibold tracking-tight">${greet}</h1>
+    <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      ${items.map(s => {
+        const m = modelOf(s.model);
+        return `<button data-play="${s.id}" class="group flex items-center gap-3 overflow-hidden rounded-lg panel2 text-left transition hover:bg-[#282132]">
+          <img alt="" src="/media/covers/${s.id}.png?v=${s.cover_v || 0}" class="h-16 w-16 shrink-0 object-cover"
+               onerror="this.style.background='linear-gradient(140deg,${m.hue},#1b1226)';this.removeAttribute('src')">
+          <span class="min-w-0 flex-1 truncate pr-3 text-sm font-medium">${esc(s.title)}</span>
+          <span class="mr-3 grid h-9 w-9 shrink-0 place-items-center rounded-full opacity-0 transition group-hover:opacity-100"
+                style="background:var(--accent)">
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="#17120b"><path d="M8 5v14l11-7z"/></svg></span>
+        </button>`;
+      }).join("")}
+    </div>`;
+  $("#hero").classList.remove("hidden");
+}
+
+function rowHTML(row) {
+  return `<section class="mb-7">
+    <div class="mb-3 flex items-end justify-between">
+      <h2 class="text-xl font-semibold tracking-tight">${esc(row.title)}</h2>
+      ${row.tag ? `<button data-tag="${esc(row.tag)}" class="text-xs dim hover:text-white">Show all${
+        row.total ? ` (${row.total})` : ""}</button>` : ""}
+    </div>
+    <div class="scroll -mx-1 flex gap-3 overflow-x-auto px-1 pb-1" style="scrollbar-width:none">
+      ${row.items.map(s => {
+        const m = modelOf(s.model);
+        return `<article class="card group w-40 shrink-0 rounded-xl p-2 transition hover:bg-[#1b1723] sm:w-44" data-id="${s.id}">
+          <div class="relative mb-2 aspect-square overflow-hidden rounded-lg panel2">
+            <img loading="lazy" alt="" src="/media/covers/${s.id}.png?v=${s.cover_v || 0}" class="h-full w-full object-cover"
+                 onerror="this.style.background='linear-gradient(140deg,${m.hue},#1b1226)';this.removeAttribute('src')">
+            <button class="play absolute bottom-2 right-2 grid h-10 w-10 place-items-center rounded-full text-black shadow-lg"
+                    style="background:var(--accent)" data-play="${s.id}" aria-label="Play ${esc(s.title)}">
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            ${songButtons(s, true)}
+          </div>
+          <div class="truncate text-[13px] font-medium">${esc(s.title)}</div>
+          <div class="truncate text-[11px] dim">${esc((s.tags || [])[0] || "Song")} · ${mmss(s.seconds)}</div>
+        </article>`;
+      }).join("")}
+    </div>
+  </section>`;
+}
+
+function featureHTML(s) {
+  const tag = (s.tags || [])[0] || "Song";
+  return `<section class="mb-8 overflow-hidden rounded-2xl panel2">
+    <div class="flex flex-col gap-5 p-5 sm:flex-row sm:items-end sm:p-6">
+      <img alt="" src="/media/covers/${s.id}.png?v=${s.cover_v || 0}" class="h-44 w-44 shrink-0 rounded-xl object-cover shadow-2xl sm:h-52 sm:w-52">
+      <div class="min-w-0 flex-1">
+        <div class="text-[11px] uppercase tracking-widest dim">Newest</div>
+        <h1 class="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">${esc(s.title)}</h1>
+        <div class="mt-2 text-sm dim">${esc(tag)} · ${mmss(s.seconds)}</div>
+        <div class="mt-4 flex gap-2">
+          <button data-play="${s.id}" class="rounded-full px-6 py-2.5 text-sm font-semibold text-black" style="background:var(--accent)">Play</button>
+          <button data-addto="${s.id}" class="rounded-full border line px-5 py-2.5 text-sm hover:text-white">Add to playlist</button>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+async function paintHome() {
+  const browsing = state.q || state.view.kind !== "all" || state.tag;
+  $("#rows").innerHTML = "";
+  $("#rows").classList.toggle("hidden", !!browsing);
+  if (browsing) {
+    $("#gridTitle").classList.remove("hidden");
+    $("#grid").classList.remove("hidden");
+    $("#more").classList.remove("hidden");
+    return;
+  }
+  const home = await api("/api/home?rows=8&per_row=12").catch(() => null);
+  if (!home) return;
+
+  if (home.mode === "small") {
+    // A handful of songs cannot fill rows; one feature and one list reads better.
+    $("#rows").innerHTML = home.feature ? featureHTML(home.feature) : "";
+    $("#gridTitle").textContent = "All songs";
+    $("#gridTitle").classList.remove("hidden");
+    $("#grid").classList.remove("hidden");
+    $("#more").classList.remove("hidden");
+    return;
+  }
+
+  state.items = home.rows.flatMap(r => r.items);            // so clicking one builds a queue
+  const recent = home.recent.length
+    ? {title: "Recently played", tag: "", items: home.recent} : null;
+  $("#rows").innerHTML = (home.feature ? featureHTML(home.feature) : "") +
+    [recent, ...home.rows].filter(Boolean).map(rowHTML).join("");
+  $("#gridTitle").classList.add("hidden");
+  $("#grid").classList.add("hidden");
+  $("#more").classList.add("hidden");
+  $("#rows").querySelectorAll("[data-tag]").forEach(b => b.onclick = () => {
+    state.tag = b.dataset.tag;
+    setView({kind: "tag", tag: b.dataset.tag}, b.dataset.tag);
+  });
+}
+
+async function paintChips() {
+  const {items} = await api("/api/categories").catch(() => ({items: []}));
+  const chip = (label, tag, on) =>
+    `<button data-chip="${esc(tag)}" class="shrink-0 rounded-full border px-3 py-1.5 text-[13px] transition ${
+      on ? "border-transparent text-black" : "line panel2 dim hover:text-white"}"
+      ${on ? 'style="background:var(--accent)"' : ""}>${esc(label)}</button>`;
+  $("#chips").innerHTML = chip("All", "", !state.tag) +
+    items.map(c => chip(`${c.tag}`, c.tag, state.tag === c.tag)).join("");
+  $("#chips").querySelectorAll("[data-chip]").forEach(b => b.onclick = () => {
+    const tag = b.dataset.chip;
+    state.tag = tag;
+    if (!tag) { setView({kind: "all"}, "All songs"); }
+    else setView({kind: "tag", tag}, tag);
+  });
+}
+
+async function paintNav() {
+  const stats = await api("/api/stats").catch(() => ({songs: 0, seconds: 0, liked: 0, plays: 0}));
+  const item = (label, key, count, icon) => `
+    <button data-view="${key}" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-[#1f1a29]">
+      <span class="dim">${icon}</span>
+      <span class="flex-1 truncate">${esc(label)}</span>
+      <span class="text-[11px] dim tabular-nums">${count ?? ""}</span>
+    </button>`;
+  $("#nav").innerHTML =
+    item("Home", "home", "", `<svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M12 3 2 12h3v9h6v-6h2v6h6v-9h3z"/></svg>`) +
+    item("All songs", "all", stats.songs, `<svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>`) +
+    item("Liked", "liked", stats.liked, `<svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9z"/></svg>`);
+  $("#libStats").textContent =
+    `${stats.songs} songs · ${(stats.seconds / 3600).toFixed(1)} h listening`;
+
+  $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => {
+    state.tag = "";
+    const k = b.dataset.view;
+    if (k === "home") setView({kind: "all"}, "All songs");
+    else if (k === "all") setView({kind: "songs"}, "All songs");
+    else setView({kind: "liked"}, "Liked songs");
+  });
+}
+
+/* Playlists are kept in this browser, not on the box: they are personal, they
+   cost the server nothing, and the database stays small. */
+const PL_KEY = "musicstudio.playlists";
+const loadPlaylists = () => { try { return JSON.parse(localStorage.getItem(PL_KEY)) || []; } catch { return []; } };
+const savePlaylists = p => localStorage.setItem(PL_KEY, JSON.stringify(p));
+
+function paintPlaylists() {
+  const items = state.playlists = loadPlaylists();
+  $("#playlists").innerHTML = items.length ? items.map((p, i) => `
+    <button data-pl="${i}" class="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-[#1f1a29]">
+      <span class="h-7 w-7 shrink-0 rounded" style="background:linear-gradient(135deg,#7c5cff,#2dd4bf)"></span>
+      <span class="flex-1 truncate">${esc(p.name)}</span>
+      <span class="text-[11px] dim tabular-nums">${p.songs.length}</span>
+    </button>`).join("")
+    : `<p class="px-3 text-[12px] dim">No playlists yet. Add a song from the panel on the right.</p>`;
+  $("#playlists").querySelectorAll("[data-pl]").forEach(b => b.onclick = () => {
+    const i = +b.dataset.pl;
+    setView({kind: "playlist", index: i, ids: items[i].songs}, items[i].name);
+  });
+}
+
+/* One dialog for every question this page asks.
+   prompt() blocks the whole browser and cannot be styled or trusted; a <dialog>
+   is part of the page, so it can be closed with Escape, read by a screen reader
+   and made to look like everything else. */
+function ask({title, message = "", label = "", type = "text", value = "", choices = null, ok = "OK"}) {
+  const d = $("#modal");
+  $("#modalTitle").textContent = title;
+  $("#modalMsg").textContent = message;
+  $("#modalMsg").classList.toggle("hidden", !message);
+  $("#modalOk").textContent = ok;
+  $("#modalField").innerHTML = `
+    ${choices ? `<select id="modalChoice" class="mb-2 w-full rounded-xl border line px-3 py-2 text-sm" style="background:var(--panel2)">
+        ${choices.map(c => `<option value="${esc(c.value)}">${esc(c.label)}</option>`).join("")}
+      </select>` : ""}
+    <label class="text-xs dim">${esc(label)}</label>
+    <input id="modalInput" type="${type}" value="${esc(value)}" autocomplete="${type === "password" ? "current-password" : "off"}"
+           class="mt-1 w-full rounded-xl border line px-3 py-2 text-sm" style="background:var(--panel2)">`;
+  d.showModal();
+  $("#modalInput").focus();
+  return new Promise(resolve => {
+    d.addEventListener("close", () => {
+      if (d.returnValue !== "ok") return resolve(null);
+      const input = $("#modalInput").value.trim();
+      resolve(choices ? {choice: $("#modalChoice").value, text: input} : input);
+    }, {once: true});
+  });
+}
+
+async function addToPlaylist(songId) {
+  const lists = loadPlaylists();
+  const answer = await ask({
+    title: "Add to playlist",
+    choices: [...lists.map((p, i) => ({value: String(i), label: p.name})),
+              {value: "new", label: "New playlist…"}],
+    label: "Name for a new playlist", value: "", ok: "Add"});
+  if (answer === null) return;
+  let list = lists[+answer.choice];
+  if (answer.choice === "new" || !list) {
+    const name = answer.text || `Playlist ${lists.length + 1}`;
+    list = {name, songs: []};
+    lists.push(list);
+  }
+  if (!list.songs.includes(songId)) list.songs.push(songId);
+  savePlaylists(lists);
+  paintPlaylists();
+  toast(`Added to ${list.name}`);
+}
+
+$("#newPlaylist").onclick = async () => {
+  const name = await ask({title: "New playlist", label: "Name", value: "", ok: "Create"});
+  if (!name) return;
+  const lists = loadPlaylists();
+  lists.push({name: name.trim(), songs: []});
+  savePlaylists(lists);
+  paintPlaylists();
+};
+
+/* ── owner sign-in, toasts, menus ───────────────────────────── */
+async function signIn(why = "") {
+  const pass = await ask({title: "Sign in", message: why || "The owner password lets this browser make songs.",
+                          label: "Owner password", type: "password", ok: "Sign in"});
+  if (pass === null) return;
+  localStorage.setItem(KEY, pass);
+  paintOwner();
+  toast(pass ? "Signed in" : "Signed out");
+}
+function paintOwner() { $("#ownerBtn").textContent = owner() ? "Sign out" : "Sign in"; }
+$("#ownerBtn").onclick = () => { if (owner()) { localStorage.removeItem(KEY); paintOwner(); toast("Signed out"); } else signIn(); };
+
+function toast(msg) {
+  const el = document.createElement("div");
+  el.className = "fixed bottom-28 left-1/2 z-50 -translate-x-1/2 rounded-full px-4 py-2 text-sm panel2 border line";
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2600);
+}
+
+$("#menuBtn").onclick = () => $("#sidebar").classList.toggle("hidden");
+$("#npToggle").onclick = () => showNowPlaying(!npOpen());
+$("#pbOpen").onclick = () => showNowPlaying(true);
+$("#npScrim").onclick = () => showNowPlaying(false);
+document.addEventListener("click", e => {
+  if (e.target.closest("#npClose")) showNowPlaying(false);
+});
+addEventListener("keydown", e => { if (e.key === "Escape" && npOpen()) showNowPlaying(false); });
+
+document.addEventListener("keydown", e => {
+  if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
+  if (e.key === " ") { e.preventDefault(); audio.paused ? audio.play() : audio.pause(); }
+  if (e.key === "ArrowRight") audio.currentTime += 5;
+  if (e.key === "ArrowLeft") audio.currentTime -= 5;
+  if (e.key === "/") { e.preventDefault(); $("#q").focus(); }
+  if (e.key === "n") step(1);
+});
+
+/* Two tabs of this site used to play two songs at once, straight into each
+   other. A player is a thing you have one of, so the tab that starts playing
+   says so and every other tab stops. Same browser only, which is where the
+   collision happens — a phone and a laptop are two rooms, not one. */
+const ONE_PLAYER = "musicstudio.playing";
+const TAB = Math.random().toString(36).slice(2);
+const channel = "BroadcastChannel" in window ? new BroadcastChannel(ONE_PLAYER) : null;
+
+function claimThePlayer() {
+  const claim = {tab: TAB, at: Date.now()};
+  if (channel) channel.postMessage(claim);
+  // Older browsers get the same message through storage events.
+  try { localStorage.setItem(ONE_PLAYER, JSON.stringify(claim)); } catch {}
+}
+
+function yieldThePlayer(claim) {
+  if (!claim || claim.tab === TAB || audio.paused) return;
+  audio.pause();
+  toast("Paused — this song is playing in another tab");
+}
+
+if (channel) channel.onmessage = e => yieldThePlayer(e.data);
+addEventListener("storage", e => {
+  if (e.key !== ONE_PLAYER || !e.newValue) return;
+  try { yieldThePlayer(JSON.parse(e.newValue)); } catch {}
+});
+audio.addEventListener("play", claimThePlayer);
+
+/* The controls outside the page — the macOS menu bar, the lock screen, the
+   keyboard's play key — talk to the page through mediaSession. Setting only
+   the metadata makes the widget SHOW the song while its buttons do nothing
+   the page knows about, so the two drift apart: the widget says playing, the
+   page says paused. Every action it can send is answered here, and the state
+   is pushed back after every change. */
+if ("mediaSession" in navigator) {
+  const ms = navigator.mediaSession;
+  const handlers = {
+    play: () => audio.play(),
+    pause: () => audio.pause(),
+    stop: () => { audio.pause(); audio.currentTime = 0; },
+    previoustrack: () => (audio.currentTime > 3 ? (audio.currentTime = 0) : step(-1)),
+    nexttrack: () => step(1),
+    seekbackward: d => { audio.currentTime = Math.max(0, audio.currentTime - (d.seekOffset || 10)); },
+    seekforward: d => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + (d.seekOffset || 10)); },
+    seekto: d => { if (d.seekTime != null) audio.currentTime = d.seekTime; },
+  };
+  for (const [action, fn] of Object.entries(handlers)) {
+    try { ms.setActionHandler(action, fn); } catch { /* not every browser has every action */ }
+  }
+  const state_ = () => { ms.playbackState = audio.paused ? "paused" : "playing"; };
+  audio.addEventListener("play", state_);
+  audio.addEventListener("pause", state_);
+  audio.addEventListener("ended", () => { ms.playbackState = "paused"; });
+  // The scrubber in the widget needs to be told where we are.
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration || !isFinite(audio.duration)) return;
+    try {
+      ms.setPositionState({duration: audio.duration, playbackRate: audio.playbackRate,
+                           position: Math.min(audio.currentTime, audio.duration)});
+    } catch { /* Safari refuses odd values; the widget simply shows no scrubber */ }
+  });
+  // Leaving the page must take the widget with it, or macOS keeps offering to
+  // play a song from a tab that no longer exists.
+  addEventListener("pagehide", () => {
+    audio.pause();
+    ms.playbackState = "none";
+    ms.metadata = null;
+  });
+}
+
+/* ── the phone's own chrome: a greeting, tabs, a tinted mini player ── */
+function paintGreeting() {
+  const h = new Date().getHours();
+  $("#greeting").textContent = h < 5 ? "Still up?" : h < 12 ? "Good morning"
+                             : h < 18 ? "Good afternoon" : "Good evening";
+}
+paintGreeting();
+setInterval(paintGreeting, 10 * 60 * 1000);
+$("#menuBtn2").onclick = () => $("#menuBtn").click();
+
+function paintTabs(active) {
+  $("#tabs").querySelectorAll("[data-tab]").forEach(b =>
+    b.style.color = b.dataset.tab === active ? "#fff" : "var(--dim)");
+}
+$("#tabs").querySelectorAll("[data-tab]").forEach(b => b.onclick = () => {
+  const tab = b.dataset.tab;
+  paintTabs(tab);
+  if (tab === "search") { $("#q").focus(); $("#q").scrollIntoView({block: "center"}); return; }
+  if (tab === "library") { setView({kind: "all"}, "All songs"); return; }
+  setView({kind: "home"}, "Home");
+});
+paintTabs("home");
+
+/* The mini player takes its colour from the song, the way the covers do —
+   the bar stops being furniture and starts belonging to what is playing. */
+function tintPlayer(song) {
+  const hue = modelOf(song?.model).hue;
+  $("#player").style.background = song
+    ? `linear-gradient(90deg, color-mix(in srgb, ${hue} 26%, var(--panel)), var(--panel))`
+    : "";
+}
+
+/* ── boot ───────────────────────────────────────────────────── */
+paintOwner();
+emptyNowPlaying();
+paintChips();
+paintHome();
+paintNav();
+paintPlaylists();
+loadPage(true).then(() => {
+  const play = new URLSearchParams(location.search).get("play");   // /?play=<id> from the creator page
+  if (play && songById(play)) playSong(play);
+});
+</script>
+</body>
+</html>

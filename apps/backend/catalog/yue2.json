@@ -1,0 +1,54 @@
+{
+  "id": "yue2",
+  "enabled": true,
+  "name": "YuE2",
+  "kind": "sing",
+  "outcome": {
+    "title": "YuE2",
+    "blurb": "Songs with vocals in about a minute. One card.",
+    "icon": "M13 2 3 14h7l-1 8 10-12h-7z",
+    "order": 2
+  },
+  "engine": "audiocpp",
+  "run": {
+    "task": "gen",
+    "family": "yue2",
+    "gguf": "Yue2-3B-GGUF/yue2-3b-q4_0.gguf",
+    "args": [
+      "--threads",
+      "8",
+      "--lyrics",
+      "{lyrics}",
+      "--request-option",
+      "style={style}",
+      "--request-option",
+      "cot=melody",
+      "--request-option",
+      "num_inference_steps=8",
+      "--session-option",
+      "yue2.model_gguf=yue2-3b-q4_0.gguf",
+      "--session-option",
+      "yue2.vae_gguf=yue2-vae-f16.gguf"
+    ]
+  },
+  "fields": [
+    "style",
+    "lyrics"
+  ],
+  "limits": {},
+  "cards": 1,
+  "rate": 0.4,
+  "notes": [
+    "planning with melody is 27% faster than off: chapter 27",
+    "length follows the lyrics; memory fits about 10.5 minutes: chapter 23"
+  ],
+  "traits": {
+    "vocals": true,
+    "best_for": "Fast songs with singing",
+    "max_minutes": 10.5,
+    "cards_note": "one card, leaves the others free"
+  },
+  "required": [
+    "style"
+  ]
+}
