@@ -1,0 +1,57 @@
+{
+  "id": "musicgen",
+  "enabled": true,
+  "name": "MusicGen Small",
+  "kind": "sing",
+  "engine": "python",
+  "outcome": {
+    "title": "MusicGen Small",
+    "blurb": "Instrumental sketches from a text prompt. No singing. One card.",
+    "icon": "M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z",
+    "order": 4
+  },
+  "run": {
+    "script": "music-box-apps/worker/musicgen_job.py",
+    "python": "engines/minimax-py/.venv/bin/python",
+    "args": [
+      "--prompt",
+      "{style}",
+      "--seconds",
+      "{duration}",
+      "--seed",
+      "{seed}",
+      "--out",
+      "{out}"
+    ],
+    "env": {
+      "MUSICGEN_MODEL": "/root/Desktop/selfhostaudioai/models/hf/musicgen-small",
+      "CUDA_VISIBLE_DEVICES": "0"
+    }
+  },
+  "fields": [
+    "style",
+    "duration"
+  ],
+  "required": [
+    "style"
+  ],
+  "limits": {
+    "max_duration": 180,
+    "min_duration": 5
+  },
+  "cards": 1,
+  "rate": 1.0,
+  "traits": {
+    "vocals": false,
+    "best_for": "Instrumental ideas, fast",
+    "max_minutes": 3,
+    "cards_note": "one card; instrumental only \u2014 it has no lyrics input"
+  },
+  "notes": [
+    "MusicGen is not a family the audio.cpp engine carries, so it runs as its own Python job, like MiniMax (worker/musicgen_job.py).",
+    "Duration is a token budget: 50 frames per second, so 120 s asks for 6,000 frames (generation_config max_length 1500 = 30 s per call by default).",
+    "The checkpoint is 'small' (2.36 GB of fp32 weights) because 'medium' is 8.04 GB to download and the box's link to Hugging Face is bursty; small is what fits the wait.",
+    "rate is a declared guess of 1.0 until three finished songs replace it with a measured median (catalog.ts does that itself).",
+    "Pinned to card 0 (CUDA_VISIBLE_DEVICES=0): the box is run one card per model, and cards 1 and 2 are kept free."
+  ]
+}

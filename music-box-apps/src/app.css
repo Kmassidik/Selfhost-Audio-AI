@@ -1,0 +1,103 @@
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@phosphor-icons/web/regular/style.css';
+@import '@phosphor-icons/web/fill/style.css';
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+
+/* The studio's two themes, carried over from the Apple-style design: same
+   colours, same glass, same font — now vendored, so the page is styled with
+   no route to the internet. */
+:root,
+[data-theme='light'] {
+	--bg-main: #f5f5f7;
+	--text-main: #000000;
+	--text-muted: #86868b;
+	--accent: #fa243c;
+	--bg-glass: rgba(255, 255, 255, 0.55);
+	--bg-glass-hover: rgba(0, 0, 0, 0.05);
+	--border-glass: rgba(0, 0, 0, 0.08);
+	--shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.08);
+	--glow-1: rgba(250, 36, 60, 0.22);
+	--glow-2: rgba(88, 120, 255, 0.2);
+	--glow-3: rgba(160, 90, 220, 0.18);
+	--glow-4: rgba(120, 150, 255, 0.12);
+}
+
+[data-theme='dark'] {
+	--bg-main: #000000;
+	--text-main: #ffffff;
+	--text-muted: #98989d;
+	--accent: #fa243c;
+	--bg-glass: rgba(30, 30, 30, 0.55);
+	--bg-glass-hover: rgba(255, 255, 255, 0.1);
+	--border-glass: rgba(255, 255, 255, 0.1);
+	--shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.5);
+	--glow-1: rgba(250, 36, 60, 0.3);
+	--glow-2: rgba(88, 120, 255, 0.28);
+	--glow-3: rgba(150, 80, 220, 0.24);
+	--glow-4: rgba(90, 120, 255, 0.16);
+}
+
+@theme inline {
+	--font-sans: 'Plus Jakarta Sans Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+	--color-bg: var(--bg-main);
+	--color-ink: var(--text-main);
+	--color-muted: var(--text-muted);
+	--color-accent: var(--accent);
+	--color-glass: var(--bg-glass);
+	--color-glasshover: var(--bg-glass-hover);
+	--color-line: var(--border-glass);
+}
+
+html,
+body {
+	min-height: 100%;
+}
+
+/* The studio shell clips itself to the viewport and scrolls inside; pages like
+   /create and /users are ordinary documents and must scroll normally. Clipping
+   the document here is what stopped them (measured the hard way). */
+
+/* no hairline where a panel meets the window edge */
+.glass-panel.no-edge {
+	border: none;
+}
+
+/* Glass only reads if something sits behind it. The backdrop is a soft
+   ambient wash in the theme's own colours — Apple's trick, and the reason the
+   panels look like glass instead of flat panels. */
+body {
+	background-color: var(--bg-main);
+	background-image:
+		radial-gradient(58vw 58vw at 8% -12%, var(--glow-1), transparent 68%),
+		radial-gradient(48vw 48vw at 98% 4%, var(--glow-2), transparent 66%),
+		radial-gradient(70vw 60vw at 46% 118%, var(--glow-3), transparent 70%),
+		radial-gradient(80vw 80vw at 50% 40%, var(--glow-4), transparent 72%);
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	color: var(--text-main);
+	transition:
+		background-color 0.4s ease,
+		color 0.4s ease;
+}
+
+.glass-panel {
+	background-color: var(--bg-glass);
+	backdrop-filter: blur(40px);
+	-webkit-backdrop-filter: blur(40px);
+	border: 1px solid var(--border-glass);
+	box-shadow: var(--shadow-glass);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+.no-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}

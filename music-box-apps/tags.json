@@ -1,0 +1,17 @@
+{
+  "_comment": [
+    "The categories a song may carry. They are not decoration: a tag picks the",
+    "cover's colour (see TAG_HUE in the worker) and fills the library's",
+    "Categories list. Chips only, on purpose — free text gave the old studio",
+    "'Lo-fi', 'lofi' and 'Lo Fi' as three different shelves.",
+    "Editing this file is how the vocabulary grows. The page and the API both",
+    "read it, so they cannot disagree."
+  ],
+  "max_per_song": 4,
+  "groups": {
+    "Genre": ["Lo-fi", "Indie pop", "Rock", "Hip hop", "Jazz", "Funk", "Neo soul", "Electronic", "Ambient", "Cinematic", "Folk", "Ballad"],
+    "Mood": ["Morning", "Night", "Chill", "Upbeat", "Sad", "Focus", "Rainy"],
+    "Language": ["English", "Indonesian", "Japanese", "Mandarin"],
+    "Instrument": ["Instrumental", "Guitar", "Piano", "Synth", "Strings", "Drums"]
+  }
+}

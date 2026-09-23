@@ -1,0 +1,48 @@
+# The platform: the app, its database, and redis for the worker that does not
+# exist yet. Caddy is not in the stack; web is exposed directly on 8096.
+
+name: music-box
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: music
+      POSTGRES_PASSWORD: musicbox-db
+      POSTGRES_DB: musicbox
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:54329:5432"      # the Mac's importer reaches it here only
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U music -d musicbox"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.web
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://music:musicbox-db@postgres:5432/musicbox
+      REDIS_URL: redis://redis:6379
+      DATA_DIR: /data
+      # set true only when a TLS proxy sits in front of this box
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    volumes:
+      - /root/Desktop/selfhostaudioai/data/studio:/data:ro
+    ports:
+      - "8096:3000"
+
+volumes:
+  pgdata:

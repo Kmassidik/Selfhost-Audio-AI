@@ -1,0 +1,23 @@
+# The web image: Bun in, Bun out. The app listens on 8096.
+# Build: docker compose build web  (run from deploy/)
+
+FROM oven/bun:1 AS build
+WORKDIR /app
+
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+
+COPY . .
+RUN bun run --bun vite build
+
+FROM oven/bun:1-slim AS run
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build /app/build ./build
+COPY --from=build /app/catalog ./catalog
+COPY --from=build /app/tags.json ./tags.json
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./
+EXPOSE 3000
+# adapter-node writes its own index.js; Bun runs it directly.
+CMD ["bun", "run", "./build/index.js"]

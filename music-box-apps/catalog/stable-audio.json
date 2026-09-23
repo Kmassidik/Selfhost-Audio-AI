@@ -1,0 +1,48 @@
+{
+  "id": "stable-audio",
+  "enabled": true,
+  "name": "Stable Audio 3 Medium",
+  "kind": "sing",
+  "outcome": {
+    "title": "Stable Audio 3 Medium",
+    "blurb": "Instrumental up to three minutes. Faster than real time. One card.",
+    "icon": "M4 15h3l4-9 4 18 3-9h2",
+    "order": 4
+  },
+  "engine": "audiocpp",
+  "run": {
+    "task": "gen",
+    "family": "stable_audio",
+    "gguf": "Stable-Audio-3-Medium-GGUF/stable-audio-3-medium-q8_0.gguf",
+    "args": [
+      "--text",
+      "{style}",
+      "--duration-seconds",
+      "{duration}"
+    ]
+  },
+  "fields": [
+    "style",
+    "duration"
+  ],
+  "limits": {
+    "max_duration": 180,
+    "min_duration": 5
+  },
+  "cards": 1,
+  "rate": 0.12,
+  "notes": [
+    "stops at 120 s, silently, whatever is asked: chapter 24",
+    "capped at 180 s by request: the box aims at three-minute takes",
+    "Medium q8_0 (3.58 GB) replaced small: the small checkpoint silently clamps at 120 s, medium reaches 380 s, and the app caps every model at 180 s by request"
+  ],
+  "traits": {
+    "vocals": false,
+    "best_for": "Backing tracks and beds",
+    "max_minutes": 3,
+    "cards_note": "one card, very fast"
+  },
+  "required": [
+    "style"
+  ]
+}
